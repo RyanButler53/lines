@@ -1,21 +1,29 @@
 // THE LINES PROBLEM
 #include <iostream>
 #include "lines.hpp"
+#include "fraction.hpp"
 #include <algorithm>
 #include <fstream>
 #include <cassert>
 using namespace std;
 
 // Line Class
-Line::Line(double slope, double intercept):
+Line::Line(Fraction slope, Fraction intercept):
+    slope_{slope}, intercept_{intercept}{}
+
+Line::Line(long long slope, long long intercept):
     slope_{slope}, intercept_{intercept}{}
 
 bool Line::operator<(const Line& l) const{
     return slope_ < l.slope_;
 }
 
-double Line::operator()(const double x) const{
+Fraction Line::operator()(const Fraction x) const{
     return slope_ * x + intercept_;
+}
+
+Fraction Line::operator()(const long long x) const{
+    return slope_ * Fraction(x) + intercept_;
 }
 
 bool Line::operator==(const Line& other) const {
@@ -28,7 +36,7 @@ std::ostream &operator<<(std::ostream& os, const Line &l){
 }
 
 // Point Class
-Point::Point(double x, double y):
+Point::Point(Fraction x, Fraction y):
     x_{x}, y_{y}{}
 
 bool Point::operator<(const Point& p) const{
@@ -66,13 +74,13 @@ std::vector<Line> linesFromFile(std::string filename){
             string slope = line.substr(0, spaceInd);
             string intercept = line.substr(spaceInd + 1);
             // Both can have decimal points and slashes
-            double lineSlope = getDouble(slope);
-            double lineIntercept = getDouble(intercept);
+            Fraction lineSlope = Fraction(slope);
+            Fraction lineIntercept = Fraction(intercept);
     
             lines.push_back(Line{lineSlope, lineIntercept});
         } else {
-            double slope = getDouble(line);
-            lines.push_back(Line{slope, 0.0});
+            Fraction slope = Fraction(line);
+            lines.push_back(Line{slope, Fraction{0,1}});
         }
     }
     return lines;
@@ -80,8 +88,8 @@ std::vector<Line> linesFromFile(std::string filename){
 
 // Finds the point line 1
 Point intersect(const Line& l1, const Line& l2){
-    double x = (l1.intercept_ - l2.intercept_) / (l2.slope_ - l1.slope_);
-    double y = l1(x);
+    Fraction x = (l1.intercept_ - l2.intercept_) / (l2.slope_ - l1.slope_);
+    Fraction y = l1(x);
     return Point(x,y);
 }
 
@@ -108,8 +116,8 @@ TopLines::TopLines(std::string filename):
             string part1 = line.substr(0, spaceInd); // slope or x
             string part2 = line.substr(spaceInd + 1); // intercept or y
             // Both can have decimal points and slashes
-            double part1dbl = getDouble(part1);
-            double part2dbl = getDouble(part2);
+            Fraction part1dbl = Fraction(part1);
+            Fraction part2dbl = Fraction(part2);
     
             if (points){
                 points_.push_back(Point{part1dbl, part2dbl});
@@ -118,8 +126,8 @@ TopLines::TopLines(std::string filename):
             }
         } else {
             assert(!points);
-            double slope = getDouble(line);
-            lines_.push_back(Line{slope, 0.0});
+            Fraction slope{line};
+            lines_.push_back(Line{slope, Fraction{0,1}});
         }
     }
 }
@@ -190,11 +198,11 @@ TopLines combine_lines(TopLines& left, TopLines& right){
     size_t right_li = 0;
     size_t right_pi = 0; // right point
 
-    double curr_x = min(right.points_[right_pi].x_, left.points_[left_pi].x_);
+    Fraction curr_x = min(right.points_[right_pi].x_, left.points_[left_pi].x_);
     while (true){
         // Evaluate
-        double left_y = left.lines_[left_li](curr_x);
-        double right_y = right.lines_[right_li](curr_x);
+        Fraction left_y = left.lines_[left_li](curr_x);
+        Fraction right_y = right.lines_[right_li](curr_x);
         if (left_y > right_y){ // left on top, no right on top yet
             // If left point is the next point:
             if (left.points_[left_pi].x_ < right.points_[right_pi].x_){

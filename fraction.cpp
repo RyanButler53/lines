@@ -11,6 +11,12 @@ Fraction::Fraction(long long num, long long den) :
     assert(den_); // Cannot have denominators be zero!
 }
 
+Fraction::Fraction(long long num):
+ num_{num}, den_{1}
+{
+    assert(den_); // Cannot have denominators be zero!
+}
+
 Fraction::Fraction(string s){
     size_t slashInd = s.find("/");
     if (slashInd != string::npos){
@@ -41,8 +47,24 @@ bool Fraction::operator<(const Fraction& f) const{
     return num_ * f.den_ < den_ * f.num_;
 }
 
+bool Fraction::operator>(const Fraction& f) const{
+    return num_ * f.den_ > den_ * f.num_;
+}
+
+bool Fraction::operator<=(const Fraction& f) const{
+    return (*this == f) or (*this < f);
+}
+
+bool Fraction::operator>=(const Fraction& f) const{
+    return (*this == f) or (*this > f);
+}
+
 bool Fraction::operator==(const Fraction &f) const{
     return num_ * f.den_ == den_ * f.num_;
+}
+
+bool Fraction::operator!=(const Fraction &f) const{
+    return !(*this == f);
 }
 
 Fraction operator+(const Fraction &left, const Fraction &right){

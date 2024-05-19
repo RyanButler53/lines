@@ -9,13 +9,19 @@ struct Fraction{
 
     // Constructors
     Fraction(long long num, long long den);
+    Fraction(long long num);
     Fraction(std::string s);
+    Fraction(const Fraction &other) = default;
     ~Fraction() = default;
 
     // Operators
 
     // Comparison
     bool operator<(const Fraction &f) const;
+    bool operator>(const Fraction &f) const;
+    bool operator<=(const Fraction &f) const;
+    bool operator>=(const Fraction &f) const;
+    bool operator!=(const Fraction &f) const;
     bool operator==(const Fraction &f) const;
 
     void simplify(); // use gcd

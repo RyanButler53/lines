@@ -1,26 +1,29 @@
 #include <vector>
 #include <ostream>
+#include "fraction.hpp"
 
 #ifndef LINES_HPP_INCLUDED
 #define LINES_HPP_INCLUDED
 
 struct Line
 {
-    double slope_;
-    double intercept_;
+    Fraction slope_;
+    Fraction intercept_;
 
-    Line(double slope, double intercept);
+    Line(Fraction slope, Fraction intercept);
+    Line(long long slope, long long intercept);
     bool operator<(const Line &l) const;
-    double operator()(const double x) const;
+    Fraction operator()(const Fraction x) const;
+    Fraction operator()(const long long x) const;
     bool operator==(const Line &other) const;
 };
 
 struct Point
 {
-    double x_;
-    double y_;
+    Fraction x_;
+    Fraction y_;
 
-    Point(double x, double y);
+    Point(Fraction x, Fraction y);
     bool operator<(const Point &p) const;
     bool operator==(const Point &p) const;
 };
@@ -44,7 +47,7 @@ Point intersect(const Line& l1, const Line& l2);
 // Solves the problem
 TopLines intersecting_lines(std::vector<Line>& lines, size_t startInd, size_t endInd);
 
-// Combines 
+// Combines
 TopLines combine_lines(TopLines &left, TopLines &right);
 
 // Lines From File

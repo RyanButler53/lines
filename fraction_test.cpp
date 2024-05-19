@@ -57,11 +57,20 @@ TEST(FractionTest, ComparisonOperator) {
     Fraction f2(1, 3);
     Fraction f3("-2/3");
     Fraction f4("15/9");
+    Fraction f5("5/3");
+    Fraction f6(0, 1);
 
     EXPECT_TRUE(f1 < f2);
     EXPECT_FALSE(f4 < f1);
     EXPECT_TRUE(f3 < f1);
     EXPECT_FALSE(f4 < f3);
+
+    EXPECT_TRUE(f1 <= f2);
+    EXPECT_FALSE(f3 >= f4);
+    EXPECT_TRUE(f6 <= f5);
+    EXPECT_TRUE(f3 != f4);
+    EXPECT_FALSE(f4 != f5);
+    EXPECT_TRUE(f5 > f2);
 }
 
 // Test stream operator
@@ -70,6 +79,9 @@ TEST(FractionTest, StreamOperator) {
     std::ostringstream os;
     os << f;
     EXPECT_EQ(os.str(), "1/2");
+    os.clear();
+
+
     Fraction f2(5, 1);
     std::ostringstream os2;
     os2 << f2;
