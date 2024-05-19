@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14)
 project(lines)
 
 # GoogleTest requires at least C++14
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(FetchContent)
@@ -22,15 +22,23 @@ add_executable(
 add_executable(
     toplines
     toplines.cpp
-    # lines.cpp
 )
 
-# set_property(TARGET lines_test VS_DEBUGGER_WORKING_DIRECTORY "/usr/local/bin/gdb")
+add_executable(
+    fraction_test
+    fraction_test.cpp
+)
 
 target_link_libraries(
   lines_test
   GTest::gtest_main
 )
 
+target_link_libraries(
+  fraction_test
+  GTest::gtest_main
+)
+
 include(GoogleTest)
 gtest_discover_tests(lines_test)
+gtest_discover_tests(fraction_test)
