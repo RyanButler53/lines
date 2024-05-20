@@ -47,6 +47,10 @@ bool Point::operator==(const Point& p) const{
     return (x_ == p.x_) and (y_ == p.y_);
 }
 
+bool Point::operator!=(const Point& p) const{
+    return !(*this==p);
+}
+
 std::ostream &operator<<(std::ostream& os, const Point &p){
     os << "(" << p.x_ << ", " << p.y_ << ")";
     return os;
@@ -115,7 +119,7 @@ TopLines::TopLines(std::string filename):
         if (spaceInd != string::npos){
             string part1 = line.substr(0, spaceInd); // slope or x
             string part2 = line.substr(spaceInd + 1); // intercept or y
-            // Both can have decimal points and slashes
+
             Fraction part1dbl = Fraction(part1);
             Fraction part2dbl = Fraction(part2);
     
@@ -184,14 +188,12 @@ TopLines intersecting_lines(vector<Line>& lines, size_t startInd, size_t endInd)
 
         return combine_lines(left, right);
     }
-    // Recursive Case
 }
 
 TopLines combine_lines(TopLines& left, TopLines& right){
-
+    // Setup
     TopLines soln;
-    // soln.add(left.lines_[0]);
-    // Iterate over 
+
     size_t left_li = 0; // maybe use iterators or combine? 
     size_t left_pi = 0; 
     
@@ -218,7 +220,7 @@ TopLines combine_lines(TopLines& left, TopLines& right){
                     curr_x = left.points_[left_pi].x_;
                 }
             } else if (left.points_[left_pi].x_ == right.points_[right_pi].x_) {
-                    // Increment the left line and add to solution
+                // Increment the left line and add to solution (its on top)
                 soln.add(left.lines_[left_li]);
                 soln.add(left.points_[left_pi]);
                 ++left_li;
@@ -229,38 +231,44 @@ TopLines combine_lines(TopLines& left, TopLines& right){
                 if (left_pi == left.points_.size()){
                     curr_x = right.points_[right_pi].x_; 
                 } else {
-                    curr_x = min(left.points_[left_pi].x_, right.points_[right_pi].x_);
+                    curr_x = min(left.points_[left_pi].x_, right.points_[right_pi].x_); 
                 }
-            }
-            else
-            { // right is next -  update right without updating soln
+            } else { // right is next -  update right without updating soln
                 ++right_li;
                 ++right_pi;
-                curr_x = right.points_[right_pi].x_;
+                curr_x = min(left.points_[left_pi].x_, right.points_[right_pi].x_);
             }
+        } else if (left_y == right_y) // Intersection point is EQUAL
+        {
+            Line l = left.lines_[left_li];
+            Line r = left.lines_[right_li];
+            soln.add(l);
+
+            Point intersection{curr_x, left_y}; // equal left and right
+            soln.add(intersection);
+
+            if (intersection == right.points_[right_pi]) {
+                ++right_li;
+                ++right_pi;
+            }
+            break;
         } else { // right line on top!. Add both
             Line l = left.lines_[left_li];
             Line r = right.lines_[right_li];
             soln.add(l);
-            // soln.add(r); // this gets added later 
-            
-            // If EQUAL don't add intersect point right away. 
+
             Point intersection = intersect(l, r);
-            if (left_y != right_y){
-                soln.add(intersection);
-            }
-            // Add all points
-            for (; right_pi < right.points_.size(); ++right_pi){
-                soln.add(right.points_[right_pi]);
-            }
-            // Add all lines if strictly greater than intersection. 
-            for (; right_li < right.lines_.size(); ++right_li){
-                // if (right.lines_[right_li](curr_x) > intersection.y_){
-                    soln.add(right.lines_[right_li]);
-                // }
-            }
-            return soln;
+            soln.add(intersection);
+            break;
         }
+    }
+
+    // Finish by adding all right points and lines
+    for (; right_pi < right.points_.size(); ++right_pi){
+        soln.add(right.points_[right_pi]);
+    }
+    for (; right_li < right.lines_.size(); ++right_li){
+        soln.add(right.lines_[right_li]);
     }
     return soln;
 }

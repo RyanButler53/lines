@@ -26,6 +26,7 @@ struct Point
     Point(Fraction x, Fraction y);
     bool operator<(const Point &p) const;
     bool operator==(const Point &p) const;
+    bool operator!=(const Point &p) const;
 };
 
 struct TopLines
