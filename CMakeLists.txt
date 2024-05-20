@@ -17,16 +17,21 @@ enable_testing()
 add_executable(
   lines_test
   lines_test.cpp
+  lines.cpp
+  fraction.cpp
 )
 
 add_executable(
     toplines
     toplines.cpp
+    lines.cpp
+    fraction.cpp
 )
 
 add_executable(
     fraction_test
     fraction_test.cpp
+    fraction.cpp
 )
 
 target_link_libraries(
