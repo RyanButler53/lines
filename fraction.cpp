@@ -90,6 +90,7 @@ Fraction operator*(const Fraction &left, const Fraction &right){
 }
 
 Fraction operator/(const Fraction &left, const Fraction &right){
+    assert(right.num_ != 0); // No dividing by zero
     Fraction flipped{right.den_, right.num_};
     return left * flipped;
 }

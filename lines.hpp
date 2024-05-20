@@ -45,7 +45,9 @@ struct TopLines
 // Finds the intersection point between two lines
 Point intersect(const Line& l1, const Line& l2);
 
-// Solves the problem
+TopLines intersecting_lines(std::vector<Line> &lines);
+
+// Recursive Helper
 TopLines intersecting_lines(std::vector<Line>& lines, size_t startInd, size_t endInd);
 
 // Combines

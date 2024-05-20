@@ -31,7 +31,8 @@ bool Line::operator==(const Line& other) const {
 }
 
 std::ostream &operator<<(std::ostream& os, const Line &l){
-    os << "y = " << l.slope_ << "x + " << l.intercept_;
+    // os << "y = " << l.slope_ << "x + " << l.intercept_
+    os << "(" << l.slope_ << "," << l.intercept_ << ")";
     return os;
 }
 
@@ -52,7 +53,7 @@ bool Point::operator!=(const Point& p) const{
 }
 
 std::ostream &operator<<(std::ostream& os, const Point &p){
-    os << "(" << p.x_ << ", " << p.y_ << ")";
+    os << "(" << p.x_ << "," << p.y_ << ")";
     return os;
 }
 
@@ -71,6 +72,10 @@ std::vector<Line> linesFromFile(std::string filename){
     ifstream input{filename};
     string line;
     std::vector<Line> lines;
+    if (!input.is_open()){
+        cerr << "Unable to open " << filename << endl;
+        exit(1);
+    }
     while (getline(input, line)) {
         // Given in slope intercept. Slope may have a slash in it
         size_t spaceInd = line.find(" ");
@@ -150,15 +155,37 @@ bool TopLines::operator==(const TopLines &other) const{
 
 std::ostream &operator<<(std::ostream& os, const TopLines &tl){
     for (const Line& l: tl.lines_){
-        os << l << ", ";
+        os << l << "| ";
     }
     os << endl;
     for (const Point& p : tl.points_){
-        os << p << ", ";
+        os << p << "| ";
     }
     return os;
 }
 
+TopLines intersecting_lines(vector<Line> &lines){
+    std::sort(lines.begin(), lines.end());
+
+    // No two lines can have the same slope. 
+    std::vector<Line> uniqueLines;
+    for (size_t i = 0; i < lines.size()-1;++i){
+        if (lines[i].slope_ == lines[i+1].slope_){
+            cerr << "Lines " << "y = " << lines[i].slope_
+                 << "x + " << lines[i].intercept_ << " and y = "
+                 << lines[i + 1].slope_ << "x + " << lines[i + 1].intercept_
+                 << " have the same slope" << endl;
+            uniqueLines.push_back(lines[i]);
+            ++i;
+        } else {
+            uniqueLines.push_back(lines[i]);
+        }
+    }
+    // for (auto& l : uniqueLines){
+    //     cerr << "y = " << l.slope_ << "x + " << l.intercept_ << endl;
+    // }
+    return intersecting_lines(uniqueLines, 0, uniqueLines.size());
+}
 // May have to change this fn signature
 TopLines intersecting_lines(vector<Line>& lines, size_t startInd, size_t endInd){
     // Base Cases: 2 and 3 lines
@@ -185,7 +212,6 @@ TopLines intersecting_lines(vector<Line>& lines, size_t startInd, size_t endInd)
         size_t mid = startInd + (endInd - startInd) / 2;
         TopLines left = intersecting_lines(lines, startInd, mid);
         TopLines right = intersecting_lines(lines, mid, endInd);
-
         return combine_lines(left, right);
     }
 }
@@ -199,10 +225,13 @@ TopLines combine_lines(TopLines& left, TopLines& right){
     Fraction curr_x = min(right.points_[right_i].x_, left.points_[left_i].x_);
     while (true){
         // Evaluate
-        Fraction left_y = left.lines_[left_i](curr_x);
+        Fraction left_y = left.lines_[left_i](curr_x); 
         Fraction right_y = right.lines_[right_i](curr_x);
         // Left line on top
         if (left_y > right_y){ 
+            if (left_i == left.points_.size()){ // last line
+                break;
+            }
             // Next event point is a left point intersection
             if (left.points_[left_i].x_ < right.points_[right_i].x_){
                 // Increment the left line and add to solution
@@ -228,7 +257,7 @@ TopLines combine_lines(TopLines& left, TopLines& right){
             } else {
                 curr_x = min(left.points_[left_i].x_, right.points_[right_i].x_); 
             }
-        } else { // right line on top!. Add both
+        } else { // Right line on top -- add left line and terminate. 
             Line l = left.lines_[left_i];
             Line r = right.lines_[right_i];
             soln.add(l);

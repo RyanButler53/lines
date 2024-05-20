@@ -1,0 +1,1 @@
+build/toplines $1 | python "image.py"
