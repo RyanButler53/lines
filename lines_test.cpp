@@ -103,6 +103,14 @@ TEST(Combine4, Test4){
     EXPECT_EQ(expected, soln);
 }
 
+TEST(Combine5, Test5){
+    TopLines left{"../inputs/combine5l.txt"};
+    TopLines right{"../inputs/combine5r.txt"};
+    TopLines expected{"../inputs/combine5-soln.txt"};
+    TopLines soln = combine_lines(left, right);
+    EXPECT_EQ(expected, soln);
+}
+
 TEST(Combine6, Test6){
     TopLines left{"../inputs/combine6l.txt"};
     TopLines right{"../inputs/combine6r.txt"};
@@ -111,10 +119,10 @@ TEST(Combine6, Test6){
     EXPECT_EQ(expected, soln);
 }
 
-TEST(Combine5, Test5){
-    TopLines left{"../inputs/combine5l.txt"};
-    TopLines right{"../inputs/combine5r.txt"};
-    TopLines expected{"../inputs/combine5-soln.txt"};
+TEST(Combine7, Test7){
+    TopLines left{"../inputs/combine7l.txt"};
+    TopLines right{"../inputs/combine7r.txt"};
+    TopLines expected{"../inputs/combine7-soln.txt"};
     TopLines soln = combine_lines(left, right);
     EXPECT_EQ(expected, soln);
 }

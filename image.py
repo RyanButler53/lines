@@ -1,14 +1,13 @@
 # Visualize a bunch of intersecting lines
 
 import matplotlib.pyplot as plt
-import numpy
+import numpy as np
 import sys
 import re
 
 def evalLine(slope, intercept, x):
     return slope * x + intercept
 
-WINDOW_SPACE = 2 # change to be scaled. 
 
 points = []
 toplines = []
@@ -19,8 +18,7 @@ filename = inputstr[2].rstrip("\n")
 
 toplines = [eval(l.strip()) for l in toplines[:-1]]
 points = [eval(p.strip()) for p in points[:-1]]
-print(toplines)
-print(points)
+
 
 # Plot Points
 x_s = [p[0] for p in points]
@@ -32,11 +30,15 @@ plt.scatter(x_s, y_s)
 ax = plt.gca()
 y_lim = ax.get_ylim()
 x_lim = ax.get_xlim()
+((x_min, x_max), (y_min, y_max)) = (x_lim, y_lim)
 
-x_min = x_lim[0] - WINDOW_SPACE
-x_max = x_lim[1] + WINDOW_SPACE
-y_min = y_lim[0] - WINDOW_SPACE
-y_max = y_lim[1] + WINDOW_SPACE
+change = 0.2 * np.average([x_min, x_max, y_min, y_max])
+
+x_min = x_lim[0] - change
+x_max = x_lim[1] + change
+y_min = y_lim[0] - change
+y_max = y_lim[1] + change
+
 ax.set_xlim([x_min, x_max])
 ax.set_ylim([y_min, y_max])
 
@@ -49,8 +51,6 @@ with open(filename) as f:
             cleanedLines.append(eval(re.sub(" ", ",",l)))
         else:
             cleanedLines.append((eval(l),0))
-    # allLines = [eval(re.sub(" ", ",",x)) for x in allLines]
-
 print(cleanedLines)  
 for (slope, intercept) in cleanedLines:
     y1 = evalLine(slope, intercept, x_min)
@@ -60,7 +60,7 @@ for (slope, intercept) in cleanedLines:
 for i in range(len(points)-1):
     x,y = points[i]
     next_x,next_y = points[i+1]
-    plt.plot([x,next_x], [y,next_y], color = "red", linewidth=2)
+    plt.plot([x,next_x], [y,next_y], "r--", linewidth=2)
 
 # Start and end segments. Run along the first topline from x_min to points[0]
 # to plot a line segment

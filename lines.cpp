@@ -181,9 +181,12 @@ TopLines intersecting_lines(vector<Line> &lines){
             uniqueLines.push_back(lines[i]);
         }
     }
-    // for (auto& l : uniqueLines){
-    //     cerr << "y = " << l.slope_ << "x + " << l.intercept_ << endl;
-    // }
+    if (lines.back().slope_ != uniqueLines.back().slope_){
+        uniqueLines.push_back(lines.back());
+    }
+    for (auto& l : uniqueLines){
+        cerr << "y = " << l.slope_ << "x + " << l.intercept_ << endl;
+    }
     return intersecting_lines(uniqueLines, 0, uniqueLines.size());
 }
 // May have to change this fn signature
@@ -221,42 +224,53 @@ TopLines combine_lines(TopLines& left, TopLines& right){
     TopLines soln;
     size_t left_i = 0; 
     size_t right_i = 0;
-
+    assert(right_i < right.points_.size());
+    assert(left_i < left.points_.size());
     Fraction curr_x = min(right.points_[right_i].x_, left.points_[left_i].x_);
     while (true){
         // Evaluate
-        Fraction left_y = left.lines_[left_i](curr_x); 
-        Fraction right_y = right.lines_[right_i](curr_x);
-        // Left line on top
-        if (left_y > right_y){ 
-            if (left_i == left.points_.size()){ // last line
-                break;
-            }
-            // Next event point is a left point intersection
-            if (left.points_[left_i].x_ < right.points_[right_i].x_){
-                // Increment the left line and add to solution
-                soln.add(left.lines_[left_i]);
-                soln.add(left.points_[left_i]);
-                ++left_i;
+            assert(right_i < right.lines_.size());
+            assert(left_i < left.lines_.size());
 
-            } else if (left.points_[left_i].x_ == right.points_[right_i].x_) {
-                // Increment the left line and add to solution (its on top)
-                soln.add(left.lines_[left_i]);
-                soln.add(left.points_[left_i]);
-                ++left_i;
-                // Increment Right line
-                ++right_i;
+            Fraction left_y = left.lines_[left_i](curr_x);
+            Fraction right_y = right.lines_[right_i](curr_x);
+            // Left line on top
+            if (left_y > right_y)
+            {
+                if (left_i == left.points_.size()) { // last line
+                    break;
+                }
+                // Next event point is a left point intersection
+                if (left.points_[left_i].x_ < right.points_[right_i].x_)
+                {
+                    // Increment the left line and add to solution
+                    soln.add(left.lines_[left_i]);
+                    soln.add(left.points_[left_i]);
+                    ++left_i;
+                }
+                else if (left.points_[left_i].x_ == right.points_[right_i].x_)
+                {
+                    // Increment the left line and add to solution (its on top)
+                    soln.add(left.lines_[left_i]);
+                    soln.add(left.points_[left_i]);
+                    ++left_i;
+                    // Increment Right line
+                    ++right_i;
+                } else { // right is next -  update right without updating soln
+                    ++right_i;
+                }
 
-            } else { // right is next -  update right without updating soln
-                ++right_i;
-            }
+                // Update Current X value
+                if (left_i == left.points_.size() and right_i == right.points_.size()){
+                    break;
+                } else if (left_i == left.points_.size()) {
+                    curr_x = right.points_[right_i].x_;
+                } else if (right_i == right.points_.size()) {
+                    curr_x = left.points_[left_i].x_;
+                } else{
+                    curr_x = min(left.points_[left_i].x_, right.points_[right_i].x_);
 
-            // Update Current X value
-            if (left_i == left.points_.size()){
-                curr_x = right.points_[right_i].x_; 
-            } else {
-                curr_x = min(left.points_[left_i].x_, right.points_[right_i].x_); 
-            }
+                }
         } else { // Right line on top -- add left line and terminate. 
             Line l = left.lines_[left_i];
             Line r = right.lines_[right_i];
