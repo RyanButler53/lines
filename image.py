@@ -51,7 +51,7 @@ with open(filename) as f:
             cleanedLines.append(eval(re.sub(" ", ",",l)))
         else:
             cleanedLines.append((eval(l),0))
-print(cleanedLines)  
+# print(cleanedLines)  
 for (slope, intercept) in cleanedLines:
     y1 = evalLine(slope, intercept, x_min)
     y2 = evalLine(slope, intercept, x_max)
@@ -72,4 +72,5 @@ plt.plot([points[-1][0], x_max], [points[-1][1], y_end], color="red", linewidth=
 # plt.plot([x1,x2], [y1,y2],color = "black", linewidth=0.5)
 
 plt.show()
+# plt.savefig("figure1.png")
 

@@ -184,9 +184,9 @@ TopLines intersecting_lines(vector<Line> &lines){
     if (lines.back().slope_ != uniqueLines.back().slope_){
         uniqueLines.push_back(lines.back());
     }
-    for (auto& l : uniqueLines){
-        cerr << "y = " << l.slope_ << "x + " << l.intercept_ << endl;
-    }
+    // for (auto& l : uniqueLines){
+    //     cerr << "y = " << l.slope_ << "x + " << l.intercept_ << endl;
+    // }
     return intersecting_lines(uniqueLines, 0, uniqueLines.size());
 }
 // May have to change this fn signature
@@ -237,9 +237,20 @@ TopLines combine_lines(TopLines& left, TopLines& right){
             // Left line on top
             if (left_y > right_y)
             {
-                if (left_i == left.points_.size()) { // last line
+                // there are no more left points. But there COULD be right points
+                if (left_i == left.points_.size() and right_i != right.points_.size()) { // last LEFT line
+                    curr_x = right.points_[right_i].x_;
+                    ++right_i;
+                    continue;
+                    // break;
+                } else if (left_i == left.points_.size() and right_i == right.points_.size())
+                {
+                    // no more left points or right points and no intersection found.
+                    soln.add(left.lines_.back());
+                    soln.add(intersect(left.lines_.back(), right.lines_.back()));
                     break;
                 }
+
                 // Next event point is a left point intersection
                 // 2 cases: Right is out of event points or left point is next
                 if ((right.points_.size() == right_i) or left.points_[left_i].x_ < right.points_[right_i].x_)

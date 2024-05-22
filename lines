@@ -1,1 +1,2 @@
-build/toplines $1 | python "image.py"
+build/toplines $1 | python "image.py";
+# open figure1.png
