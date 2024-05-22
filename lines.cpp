@@ -241,7 +241,8 @@ TopLines combine_lines(TopLines& left, TopLines& right){
                     break;
                 }
                 // Next event point is a left point intersection
-                if (left.points_[left_i].x_ < right.points_[right_i].x_)
+                // 2 cases: Right is out of event points or left point is next
+                if ((right.points_.size() == right_i) or left.points_[left_i].x_ < right.points_[right_i].x_)
                 {
                     // Increment the left line and add to solution
                     soln.add(left.lines_[left_i]);
@@ -262,6 +263,13 @@ TopLines combine_lines(TopLines& left, TopLines& right){
 
                 // Update Current X value
                 if (left_i == left.points_.size() and right_i == right.points_.size()){
+                    // Never found a crossing. Code duplicated. 
+                    Line l = left.lines_[left_i];
+                    Line r = right.lines_[right_i];
+                    soln.add(l);
+
+                    Point intersection = intersect(l, r);
+                    soln.add(intersection);
                     break;
                 } else if (left_i == left.points_.size()) {
                     curr_x = right.points_[right_i].x_;
