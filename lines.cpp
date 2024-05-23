@@ -14,8 +14,13 @@ Line::Line(Fraction slope, Fraction intercept):
 Line::Line(long long slope, long long intercept):
     slope_{slope}, intercept_{intercept}{}
 
+// If same slope, orders the higher intercept one SMALLER
 bool Line::operator<(const Line& l) const{
-    return slope_ < l.slope_;
+    if (slope_ == l.slope_){
+        return intercept_ > l.intercept_;
+    } else {
+        return slope_ < l.slope_;
+    }
 }
 
 Fraction Line::operator()(const Fraction x) const{
@@ -55,17 +60,6 @@ bool Point::operator!=(const Point& p) const{
 std::ostream &operator<<(std::ostream& os, const Point &p){
     os << "(" << p.x_ << "," << p.y_ << ")";
     return os;
-}
-
-double getDouble(std::string s){
-    size_t slashInd = s.find("/");
-    if (slashInd != string::npos){
-        double numerator = stod(s.substr(0, slashInd));
-        double denominator = stod(s.substr(slashInd+1));
-        return numerator / denominator;
-    } else {
-        return stod(s);
-    }
 }
 
 std::vector<Line> linesFromFile(std::string filename){
@@ -235,12 +229,11 @@ TopLines combine_lines(TopLines& left, TopLines& right){
             Fraction left_y = left.lines_[left_i](curr_x);
             Fraction right_y = right.lines_[right_i](curr_x);
             // Left line on top
-            if (left_y > right_y)
-            {
-                // there are no more left points. But there COULD be right points
-                if (left_i == left.points_.size() and right_i != right.points_.size()) { // last LEFT line
-                    curr_x = right.points_[right_i].x_;
+            if (left_y > right_y) {
+                // No more left points. But there COULD be right points
+                if (left_i == left.points_.size() and right_i != right.points_.size()) {
                     ++right_i;
+                    curr_x = right.points_[right_i].x_;
                     continue;
                     // break;
                 } else if (left_i == left.points_.size() and right_i == right.points_.size())
@@ -253,6 +246,7 @@ TopLines combine_lines(TopLines& left, TopLines& right){
 
                 // Next event point is a left point intersection
                 // 2 cases: Right is out of event points or left point is next
+                assert(left_i < left.points_.size());
                 if ((right.points_.size() == right_i) or left.points_[left_i].x_ < right.points_[right_i].x_)
                 {
                     // Increment the left line and add to solution
@@ -297,8 +291,9 @@ TopLines combine_lines(TopLines& left, TopLines& right){
 
             Point intersection = intersect(l, r);
             soln.add(intersection);
-
-            if (intersection == right.points_[right_i]) {
+            // assert(right_i < right.points_.size());
+            if (right_i < right.points_.size() and intersection == right.points_[right_i])
+            {
                 ++right_i;
             }
             break;

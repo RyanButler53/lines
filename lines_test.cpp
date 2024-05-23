@@ -142,6 +142,14 @@ TEST(CombineLines, Test9){
     EXPECT_EQ(expected, soln);
 }
 
+TEST(CombineLines, Test10){
+    TopLines left{"../inputs/combine10l.txt"};
+    TopLines right{"../inputs/combine10r.txt"};
+    TopLines expected{"../inputs/combine10-soln.txt"};
+    TopLines soln = combine_lines(left, right);
+    EXPECT_EQ(expected, soln);
+}
+
 TEST(FullDC, TripleOverlapCase){
     std::vector<Line> input = linesFromFile("../inputs/4lines2.txt");
     std::sort(input.begin(), input.end());
