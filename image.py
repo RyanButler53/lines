@@ -5,6 +5,8 @@ import numpy as np
 import sys
 import re
 
+WINDOW_SCALE = 0.4
+
 def evalLine(slope, intercept, x):
     return slope * x + intercept
 
@@ -23,7 +25,7 @@ points = [eval(p.strip()) for p in points[:-1]]
 x_s = [p[0] for p in points]
 y_s = [p[1] for p in points]
 
-plt.scatter(x_s, y_s)
+plt.scatter(x_s, y_s, marker="D",color='fuchsia')
 
 # Get window parameters and expand
 ax = plt.gca()
@@ -31,7 +33,7 @@ y_lim = ax.get_ylim()
 x_lim = ax.get_xlim()
 ((x_min, x_max), (y_min, y_max)) = (x_lim, y_lim)
 lim_arr = np.array([x_min, x_max, y_min, y_max])
-change =  np.average(abs(0.2*lim_arr))
+change =  np.average(abs(WINDOW_SCALE*lim_arr))
 
 x_min = x_lim[0] - change
 x_max = x_lim[1] + change
