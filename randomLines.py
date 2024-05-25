@@ -12,7 +12,10 @@ class Fraction():
         self.den = den
 
     def __repr__(self) -> str:
-        return f"{self.num}/{self.den}"
+        if (self.den == 1):
+            return str(self.num)
+        else:
+            return f"{self.num}/{self.den}"
     
     def reduce(self):
         gcd = math.gcd(self.num,self.den)
