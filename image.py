@@ -1,9 +1,8 @@
-# Visualize a bunch of intersecting lines
+# Visualize the intersecting lines
 
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
-import re
 
 WINDOW_SCALE = 0.4
 
@@ -16,7 +15,8 @@ toplines = []
 inputstr = sys.stdin.readlines()
 toplines = inputstr[0].split('|')
 points = inputstr[1].split('|')
-filename = inputstr[2].rstrip("\n")
+all_lines = inputstr[2:]
+all_lines = map(eval, all_lines)
 
 toplines = [eval(l.strip()) for l in toplines[:-1]]
 points = [eval(p.strip()) for p in points[:-1]]
@@ -26,6 +26,9 @@ x_s = [p[0] for p in points]
 y_s = [p[1] for p in points]
 
 plt.scatter(x_s, y_s, marker="D",color='fuchsia')
+
+# Center
+plt.scatter([np.average(x_s)], [np.average(y_s)], marker='D', color='midnightblue')
 
 # Get window parameters and expand
 ax = plt.gca()
@@ -37,23 +40,15 @@ change =  np.average(abs(WINDOW_SCALE*lim_arr))
 
 x_min = x_lim[0] - change
 x_max = x_lim[1] + change
-y_min = y_lim[0] - change
-y_max = y_lim[1] + change
+y_min = y_lim[0] - 10*change # 10-15 gets good images
+y_max = y_lim[1] + 10*change
 
 ax.set_xlim([x_min, x_max])
 ax.set_ylim([y_min, y_max])
 
 #Draw all lines
-with open(filename) as f:
-    all_lines = f.readlines()
-    cleaned_lines=[]
-    for l in all_lines:
-        if " " in l:
-            cleaned_lines.append(eval(re.sub(" ", ",",l)))
-        else:
-            cleaned_lines.append((eval(l),0))
 
-for (slope, intercept) in cleaned_lines:
+for (slope, intercept) in all_lines:
     y1 = evalLine(slope, intercept, x_min)
     y2 = evalLine(slope, intercept, x_max)
     plt.plot([x_min,x_max], [y1,y2],color = "black", linewidth=0.5)
@@ -71,5 +66,6 @@ y_end = evalLine(toplines[-1][0], toplines[-1][1], x_max)
 plt.plot([points[-1][0], x_max], [points[-1][1], y_end], color="red", linewidth=2)
 
 # plt.show()
+
 plt.savefig("figure1.png")
 
