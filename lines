@@ -1,3 +1,3 @@
 #python randomLines.py > $1; #build/toplines < input.txt
-python randomLines.py | build/toplines | python "image.py";
-open figure1.png
+python src/randomLines.py | build/toplines | python "src/image.py";
+open images/figure1.png

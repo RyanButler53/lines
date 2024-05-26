@@ -23,22 +23,22 @@ set(CMAKE_EXE_LINKER_FLAGS "${GCC_UBSAN_LINK_FLAGS}")
 
 add_executable(
   lines_test
-  lines_test.cpp
-  lines.cpp
-  fraction.cpp
+  src/lines_test.cpp
+  src/lines.cpp
+  src/fraction.cpp
 )
 
 add_executable(
     toplines
-    toplines.cpp
-    lines.cpp
-    fraction.cpp
+    src/toplines.cpp
+    src/lines.cpp
+    src/fraction.cpp
 )
 
 add_executable(
     fraction_test
-    fraction_test.cpp
-    fraction.cpp
+    src/fraction_test.cpp
+    src/fraction.cpp
 )
 
 target_link_libraries(
