@@ -62,28 +62,39 @@ std::ostream &operator<<(std::ostream& os, const Point &p){
     return os;
 }
 
+void processLine(std::string& line, std::vector<Line>& lines){
+    size_t spaceInd = line.find(" ");
+    if (spaceInd != string::npos){
+        string slope = line.substr(0, spaceInd);
+        string intercept = line.substr(spaceInd + 1);
+        // Both can have decimal points and slashes
+        Fraction lineSlope = Fraction(slope);
+        Fraction lineIntercept = Fraction(intercept);
+
+        lines.push_back(Line{lineSlope, lineIntercept});
+    } else {
+        Fraction slope = Fraction(line);
+        lines.push_back(Line{slope, Fraction{0,1}});
+    }
+}
+
 std::vector<Line> linesFromFile(std::string filename){
-    ifstream input{filename};
+
+    ifstream input;
     string line;
     std::vector<Line> lines;
-    if (!input.is_open()){
-        cerr << "Unable to open " << filename << endl;
-        exit(1);
-    }
-    while (getline(input, line)) {
-        // Given in slope intercept. Slope may have a slash in it
-        size_t spaceInd = line.find(" ");
-        if (spaceInd != string::npos){
-            string slope = line.substr(0, spaceInd);
-            string intercept = line.substr(spaceInd + 1);
-            // Both can have decimal points and slashes
-            Fraction lineSlope = Fraction(slope);
-            Fraction lineIntercept = Fraction(intercept);
-    
-            lines.push_back(Line{lineSlope, lineIntercept});
-        } else {
-            Fraction slope = Fraction(line);
-            lines.push_back(Line{slope, Fraction{0,1}});
+    if (filename != "") {
+        ifstream input = ifstream{filename};
+        if (!input.is_open()){
+            cerr << "Unable to open " << filename << endl;
+            exit(1);
+        }
+        while (getline(input, line)) {
+            processLine(line, lines);
+        }
+    } else {
+        while (getline(std::cin, line)) {
+            processLine(line, lines);
         }
     }
     return lines;

@@ -53,8 +53,9 @@ TopLines intersecting_lines(std::vector<Line>& lines, size_t startInd, size_t en
 // Combines
 TopLines combine_lines(TopLines &left, TopLines &right);
 
-// Lines From File
+// Lines From File or Stdin
 std::vector<Line> linesFromFile(std::string filename);
+void processLine(std::string &line, std::vector<Line> &lines);
 
 // Printing Operators
 std::ostream &operator<<(std::ostream& os, const Line &l);
