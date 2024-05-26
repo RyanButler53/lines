@@ -21,13 +21,20 @@ enable_testing()
 set(CMAKE_CXX_FLAGS "${GCC_UBSAN_COMPILE_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS "${GCC_UBSAN_LINK_FLAGS}")
 
+# Tests
 add_executable(
   lines_test
   src/lines_test.cpp
   src/lines.cpp
   src/fraction.cpp
 )
+add_executable(
+    fraction_test
+    src/fraction_test.cpp
+    src/fraction.cpp
+)
 
+# Production
 add_executable(
     toplines
     src/toplines.cpp
@@ -36,8 +43,9 @@ add_executable(
 )
 
 add_executable(
-    fraction_test
-    src/fraction_test.cpp
+    trails
+    src/trails.cpp
+    src/lines.cpp
     src/fraction.cpp
 )
 

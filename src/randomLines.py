@@ -74,12 +74,12 @@ def allSlopes(jitterFactor=1):
         print(s,i)
 
 def allSlopes2(jitterFactor):
-    slopes = range(-20,20,2)
-    slopes = random.sample(slopes,15)
+    slopes = range(-24,24,2)
+    slopes = random.sample(slopes,20)
     intercepts = [-1 * (abs(s)* abs(s-1))//2 for s in slopes]
     slopes = [s +int(np.random.normal(0,jitterFactor)) for s in slopes]
     
     for s,i in zip(slopes,intercepts):
         print(s,i)
 
-allSlopes2(2)
+allSlopes2(3)

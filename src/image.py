@@ -34,6 +34,7 @@ center_x, center_y = (np.average(x_s), np.average(y_s))
 
 plt.scatter([0], [0], marker='D', color='midnightblue')
 
+# Use currying to create a transposition function
 transposex = functools.partial(transpose, center_x)
 transposePoints = functools.partial(transposex, center_y)
 
@@ -87,6 +88,9 @@ x2,y2 = transposePoints(x_max, y_end)
 plt.plot([x1,x2],[y1,y2],color = "red", linewidth=2)
 
 # plt.show()
+
+ax.set_axis_off()
+plt.tight_layout()
 
 plt.savefig("images/figure1.png")
 

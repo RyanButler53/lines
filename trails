@@ -1,1 +1,7 @@
-echo "trails"
+#!/bin/bash
+numTrails=${1-4}
+color=${2:-'random'}
+separate=${3:-0} # zero for separate, anything else for compounding
+
+python src/randomlines.py | build/trails $numTrails $separate |  python src/trails.py $color;
+open images/trails.png;
