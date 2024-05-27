@@ -7,15 +7,11 @@ using namespace std;
 int main(int argc, char** argv){
     int numTrails = 4;
     bool separate = true;
-    if (argc > 1)
-    {
+    if (argc > 1) {
         numTrails = stoi(argv[1]);
-        cerr << "numtrails " << numTrails << endl;
     }
-    if (argc > 2)
-    {
+    if (argc > 2) {
         separate = (stoi(argv[2]) == 0);
-        cerr << "separate" << separate << endl;
     }
 
     std::vector<Line> lines = linesFromFile("");
