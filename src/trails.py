@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
 import sys
-import functools
 
 WINDOW_SCALE = 0.4
 
@@ -24,6 +23,7 @@ inputStr = sys.stdin.readlines()
 numTrails = int(inputStr[0])
 allToplines = []
 allPoints = []
+
 # Resize Figure
 plt.figure(figsize=(10,10))
 
@@ -84,12 +84,6 @@ for toplines, pts,c in zip(allToplines, allPoints, colors):
     y_end = evalLine(toplines[-1][0], toplines[-1][1], x_max)
     plt.plot([pts[-1][0], x_max], [pts[-1][1], y_end], color=c, linewidth=3)
     
-
-
-
-
-
-
 ax.set_axis_off()
 plt.tight_layout()
 plt.savefig("images/trails.png")

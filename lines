@@ -1,5 +1,4 @@
 #!/bin/bash
 
-#python randomLines.py > $1; #build/toplines < input.txt
 python src/randomLines.py | build/toplines | python "src/image.py";
 open images/figure1.png
