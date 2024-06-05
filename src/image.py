@@ -32,7 +32,7 @@ y_s = [p[1] for p in points]
 # Center
 center_x, center_y = (np.average(x_s), np.average(y_s))
 
-plt.scatter([0], [0], marker='D', color='midnightblue')
+# plt.scatter([0], [0], marker='D', color='midnightblue')
 
 # Use currying to create a transposition function
 transposex = functools.partial(transpose, center_x)
