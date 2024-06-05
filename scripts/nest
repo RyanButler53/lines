@@ -1,0 +1,4 @@
+#!/bin/bash
+
+python src/randomLines.py | build/toplines | python "src/nest.py";
+# open images/nest.png
