@@ -25,7 +25,7 @@ points = [eval(p.strip()) for p in points[:-1]]
 x_s = [p[0] for p in points]
 y_s = [p[1] for p in points]
 
-plt.scatter(x_s, y_s, marker=".",color='black')
+plt.scatter(x_s, y_s, marker="o",color='black')
 
 # Get window parameters and expand
 ax = plt.gca()
@@ -63,11 +63,5 @@ plt.plot([x_min,points[0][0]],[y_start,points[0][1]],color = "red", linewidth=2)
 y_end = evalLine(toplines[-1][0], toplines[-1][1], x_max)
 plt.plot([points[-1][0],x_max],[points[-1][1],y_end],color = "red", linewidth=2)
 
-# plt.show()
-plt.scatter(x_s, y_s, marker="o",color='black')
-
-# ax.set_axis_off()
 plt.tight_layout()
-
 plt.savefig("images/figure1.png")
-

@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import (
     QComboBox,
     QVBoxLayout,
     QHBoxLayout,
+    QSlider,
     QGridLayout,
     QWidget,
 )
@@ -116,36 +117,49 @@ class MainWindow(QMainWindow):
         title = self.make_title("Randomly Generated Trails of Top Lines")
         self.rightLayout.addWidget(title)
 
+        # Store the widgets for easy retrival
+        self.rightWidgets = []
+
         # Grid
         rightGrid = QGridLayout()
         
         #Number of lines
         rightGrid.addWidget(QLabel("Number of\nRandom Lines"),0,0)
         field = QLineEdit()
-        field.setInputMask('0000')
+        field.setInputMask('00')
         field.setPlaceholderText("20")
         rightGrid.addWidget(field,0,1)
+        self.rightWidgets.append(field)
 
         #color Scheme
         rightGrid.addWidget(QLabel("Matplotlib\nColor Scheme"),1,0)
-        dropdown = QComboBox()
-        dropdown.addItems(COLOR_MAPS)
-        rightGrid.addWidget(dropdown,1,1)
-        # Add default to random
+        color_dropdown = QComboBox()
+        color_dropdown.addItems(COLOR_MAPS)
+        rightGrid.addWidget(color_dropdown,1,1)
+        self.rightWidgets.append(color_dropdown)
 
         # Number of Trails
         rightGrid.addWidget(QLabel("Number of\nTrails"),2,0)
         field = QLineEdit()
-        field.setInputMask('0000')
+        field.setInputMask('00')
         field.setPlaceholderText("4")
         rightGrid.addWidget(field,2,1)
-        #default to 4
+        self.rightWidgets.append(field)
+
+        rightGrid.addWidget(QLabel("Randomness Level"),3,0)
+        slider = QSlider(Qt.Orientation.Horizontal)
+        slider.setRange(0,7)
+        slider.setSingleStep(1)
+        rightGrid.addWidget(slider,3,1)
+        self.rightWidgets.append(slider)
+
 
         # Output filename
-        rightGrid.addWidget(QLabel("Output Filename"),3,0)
+        rightGrid.addWidget(QLabel("Output Filename"),4,0)
         output = QLineEdit()
         output.setPlaceholderText("image.png")
-        rightGrid.addWidget(output,3,1)
+        rightGrid.addWidget(output,4,1)
+        self.rightWidgets.append(output)
 
         self.rightLayout.addLayout(rightGrid)
 
@@ -155,7 +169,41 @@ class MainWindow(QMainWindow):
         self.rightLayout.addWidget(generateButton)
 
     def generateArt(self):
-        print("generating art")
+        # Need to get number of lines, max 50
+        numLines = self.getNumLines()
+        color = self.rightWidgets[1].currentText()
+        numTrails = self.getNumTrails(numLines)
+        
+        jitter = self.rightWidgets[3].value()
+        filename = self.rightWidgets[4].text().rstrip(".png")
+        if filename == "":
+            filename = "images/trails"
+        args = [str(arg) for arg in [numLines, color, numTrails, jitter, filename+".png"]]
+        subprocess.call(["scripts/trails"] + args)
+
+    def getNumLines(self):
+        try:
+            numLines = int(self.rightWidgets[0].text())
+        except ValueError as error:
+            print("Defaulting to 20 lines")
+            return 20
+        if numLines > 50:
+            print(f"Max Lines is 50")
+            return 50
+        elif numLines < 2:
+            print(f"Min lines is 2")
+            return 2
+        return numLines
+        
+    def getNumTrails(self, numLines):
+        try: 
+            numTrails = int(self.rightWidgets[2].text())
+        except ValueError as error:
+            numTrails = numLines // 2
+        if numTrails > numLines//2:
+            print(f"No more than number of lines/2 trails")
+            numTrails = numLines//2
+        return numTrails
 
 # Create a Qt widget, which will be our window.
 window = MainWindow()

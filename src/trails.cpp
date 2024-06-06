@@ -52,13 +52,6 @@ int main(int argc, char** argv){
         cout << *tl << endl;
     }
 
-    // // Print All solutions
-    // for (auto &lv : linesVector)
-    // {
-    //     TopLines solution = intersecting_lines(lv);
-    //     cout << solution << endl;
-    // }
-
     // Print all the lines
     for (auto &l : lines)
     {

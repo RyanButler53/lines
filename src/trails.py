@@ -16,6 +16,10 @@ elif cmap not in COLOR_MAPS:
     print("Picking a random color map")
     cmap = np.random.choice(COLOR_MAPS) #chooses to random color map
 
+filename = 'images/trails.png'
+if len(sys.argv)== 3:
+    filename = sys.argv[2]
+
 def evalLine(slope, intercept, x):
     return slope * x + intercept
 
@@ -25,7 +29,7 @@ allToplines = []
 allPoints = []
 
 # Resize Figure
-plt.figure(figsize=(10,10))
+plt.figure(figsize=(9,9))
 
 for trail_i in range(1, numTrails * 2, 2):
     lines = inputStr[trail_i].split('|')
@@ -56,8 +60,8 @@ change =  np.average(abs(WINDOW_SCALE*lim_arr))
 
 x_min = x_lim[0] - change
 x_max = x_lim[1] + change
-y_min = y_lim[0] - 15*change # 10-15 gets good images
-y_max = y_lim[1] + 15*change
+y_min = y_lim[0] - 30*change # 10-15 gets good images
+y_max = y_lim[1] + 30*change
     
 ax.set_xlim([x_min, x_max])
 ax.set_ylim([y_min, y_max])
@@ -86,4 +90,5 @@ for toplines, pts,c in zip(allToplines, allPoints, colors):
     
 ax.set_axis_off()
 plt.tight_layout()
-plt.savefig("images/trails.png")
+
+plt.savefig(filename)

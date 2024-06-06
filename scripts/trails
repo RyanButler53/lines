@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Args
+numLines=$1
+color=$2
+numTrails=$3
+jitter=$4
+filename=$5
+
+#Main script
+python src/randomlines.py $numLines $jitter| build/trails $numTrails |  python src/trails.py $color $filename;
+open $filename; #images/trails.png;
