@@ -2,7 +2,13 @@ The problem is as follows:
 
 Given a list of lines (with unique slopes) determine which line has the highest y value at all x values. 
 
-The executables are built using cmake and run using the shell scripts `./lines` and `./trails`. `./lines` has no arguments and solves the problem with 20 randomly (ish) generated lines and plots the solution. I've found that more than 20 lines is not typically very interesting. 
-`./trails` solves n problems and visualizes them on top of each other. There is the option to choose how many solutions to layer on. The color scheme can also be changed. 
+Software Requirements: Must have gcc, cmake, python3 and pyqt6. 
+
+Build: `cmake --build build`
+
+Run: `./run` or `python3 src/main.py`. 
+
+In the GUI, there are two tabs. One will visualize the top lines and the other will attempt to create some random art. For the visualization, input the lines in y=mx+b (omitting the y=) form. Maximum of 25 lines
+For the random artwork, there is a maximum of 50 lines and no more than half of the number of lines can be highlighted (this is an odd issue, will look into)
 
 There is a mostly full suite of tests for the Lines, Point, Fraction and Toplines classes however extensive fuzz testing occasionally reveals a crash. 
