@@ -12,6 +12,7 @@ from PyQt6.QtWidgets import (
     QGridLayout,
     QWidget,
 )
+import subprocess
 
 
 COLOR_MAPS = ['random', 'viridis', 'plasma', 'inferno', 'magma', 'cividis','spring', 
@@ -71,7 +72,7 @@ class MainWindow(QMainWindow):
         for _ in range(5):
             self.add_line_box()
         firstLine = self.lineBoxes[0].itemAt(1).widget()
-        firstLine.setPlaceholderText("y = 2x + 3")
+        firstLine.setPlaceholderText("2x + 3")
 
 
     def add_line_box(self):
@@ -79,7 +80,7 @@ class MainWindow(QMainWindow):
         if (numLines > 24):
             return
         leftLayout = QHBoxLayout()
-        leftLayout.addWidget(QLabel(f"Line {numLines+1}:"))
+        leftLayout.addWidget(QLabel(f"Line {numLines+1}: y="))
         leftLayout.addWidget(QLineEdit())
         self.lineBoxes.append(leftLayout)
         self.leftLayout.addLayout(leftLayout)
@@ -93,7 +94,17 @@ class MainWindow(QMainWindow):
         return title
     
     def visualize(self):
-        pass
+        lines = []
+        for layout in self.lineBoxes:
+            box = layout.itemAt(1).widget()
+            text = box.text()
+            if text != "":
+                lines.append(text)
+        args = ['scripts/ordinary_lines']
+        for l in lines:
+            args.append(l)
+        subprocess.call(args)
+
 
     def clear(self):
         pass

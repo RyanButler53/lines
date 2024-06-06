@@ -1,0 +1,4 @@
+#!/bin/bash
+
+python src/randomLines.py | build/toplines | python "src/image.py";
+open images/figure1.png

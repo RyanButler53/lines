@@ -6,6 +6,7 @@ class InvalidLineException(Exception):
     """Raise an Invalid Line Exception"""
 
 class Fraction():
+    """Class to handle Fractions"""
     def __init__(self,num,den) -> None:
         assert(den)
         self.num = num
@@ -29,20 +30,18 @@ class Fraction():
 class LineParser():
 
     def __init__(self, strings):
-        
         #remove all spaces
-        self.checkStrings(strings)
+        self.clearSpaces(strings)
     
-    def checkStrings(self,strings):
+    def clearSpaces(self,strings):
+        """Removes all spaces from the lines"""
         self.strings = []
         for s in strings:
-            s = re.sub(r' ',"",s)
-            if s[:2] != "y=":
-                raise InvalidLineException()
-            self.strings.append(s[2:])
+            noSpace = re.sub(r' ',"",s)
+            self.strings.append(noSpace)
         
-    def __call__(self):
-        parsed = []
+    def evaluate(self):
+        """Parses all the strings and sends them to stdout"""
         for s in self.strings:
             slope,intercept = self.parseString(s)
             print(slope,intercept)
@@ -54,7 +53,6 @@ class LineParser():
         slope_int = 0
         if slope_int_match:
             slope_int_str = slope_int_match.group(0)
-            # print(slope_int_str)
             slope_int_str = slope_int_str.rstrip("x")
             if '/' in slope_int_str:
                 num,den = [int(x) for x in slope_int_str.split("/")]
@@ -67,6 +65,8 @@ class LineParser():
                     num+="0"
                 slope_int = decToFrac(num,den)
             else:
+                if (slope_int_str == '-' or slope_int_str==""):
+                    slope_int_str+="1"
                 slope_int = int(slope_int_str)
 
             # chop off the match part
@@ -76,7 +76,7 @@ class LineParser():
 
     def parseString(self,string):
         """Parses a string and returns slope and intercept as a fraction. """
-        slope_regex = r'^-?((\d{0,4}\.\d{1,4})|\d{1,4}|(\d{1,4}\/\d{1,4}))x'
+        slope_regex = r'^-?((\d{0,4}\.\d{1,4})|\d{1,4}|(\d{1,4}\/\d{1,4}))?x'
         intercept_regex = r'^[+-]?((\d{0,4}\.\d{1,4})|\d{1,4}|(\d{1,4}\/\d{1,4}))$'
         slope = 0
         intercept = 0
@@ -94,4 +94,6 @@ def decToFrac(number:str,decimal:str):
         num = int(number)*den + int(decimal)
     return Fraction(num,den).reduce()
 
-l = LineParser(["y=2x-3", "y=15.2x-14.3", "y=19x", "y=3/4", "y=12x-16/3", "y=1.9x-7/3"])
+lines = sys.argv[1:]
+l = LineParser(lines)
+l.evaluate()
