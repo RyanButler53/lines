@@ -6,7 +6,7 @@ import sys
 def allSlopes(jitterFactor,n):
     slopes = range(-50,50,2)
     slopes = random.sample(slopes,n)
-    intercepts = [-1 * (abs(s)* abs(s-1))//2 for s in slopes]
+    intercepts = [-1*n * (abs(s)* abs(s-1))//2 for s in slopes]
     slopes = [s +int(np.random.normal(0,jitterFactor)) for s in slopes]
     for s,i in zip(slopes,intercepts):
         print(s,i)
