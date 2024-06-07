@@ -67,7 +67,6 @@ void processLine(std::string& line, std::vector<Line>& lines){
     if (spaceInd != string::npos){
         string slope = line.substr(0, spaceInd);
         string intercept = line.substr(spaceInd + 1);
-        // Both can have decimal points and slashes
         Fraction lineSlope = Fraction(slope);
         Fraction lineIntercept = Fraction(intercept);
 
@@ -100,13 +99,12 @@ std::vector<Line> linesFromFile(std::string filename){
     return lines;
 }
 
-// Finds the point line 1
+// Finds the point line 1 and line 2 intersect at. 
 Point intersect(const Line& l1, const Line& l2){
     Fraction x = (l1.intercept_ - l2.intercept_) / (l2.slope_ - l1.slope_);
     Fraction y = l1(x);
     return Point(x,y);
 }
-
 
 // Top Lines Class (Solution)
 TopLines::TopLines(vector<Line> lns, vector<Point> pts):
@@ -130,13 +128,13 @@ TopLines::TopLines(std::string filename):
             string part1 = line.substr(0, spaceInd); // slope or x
             string part2 = line.substr(spaceInd + 1); // intercept or y
 
-            Fraction part1dbl = Fraction(part1);
-            Fraction part2dbl = Fraction(part2);
+            Fraction part1frac = Fraction(part1);
+            Fraction part2frac = Fraction(part2);
     
             if (points){
-                points_.push_back(Point{part1dbl, part2dbl});
+                points_.push_back(Point{part1frac, part1frac});
             } else {
-                lines_.push_back(Line{part1dbl, part2dbl});
+                lines_.push_back(Line{part2frac, part2frac});
             }
         } else {
             assert(!points);
@@ -189,12 +187,9 @@ TopLines intersecting_lines(vector<Line> &lines){
     if (lines.back().slope_ != uniqueLines.back().slope_){
         uniqueLines.push_back(lines.back());
     }
-    // for (auto& l : uniqueLines){
-    //     cerr << "y = " << l.slope_ << "x + " << l.intercept_ << endl;
-    // }
     return intersecting_lines(uniqueLines, 0, uniqueLines.size());
 }
-// May have to change this fn signature
+
 TopLines intersecting_lines(vector<Line>& lines, size_t startInd, size_t endInd){
     // Base Cases: 2 and 3 lines
     if (endInd - startInd == 2){
@@ -235,59 +230,57 @@ TopLines combine_lines(TopLines& left, TopLines& right){
     assert(left_i < numLeftPts);
     Fraction curr_x = min(right.points_[right_i].x_, left.points_[left_i].x_);
     while (true){
-        // Evaluate
-            assert(right_i < right.lines_.size());
-            assert(left_i < left.lines_.size());
+        // Evaluate at current x
+        Fraction left_y = left.lines_[left_i](curr_x);
+        Fraction right_y = right.lines_[right_i](curr_x);
 
-            Fraction left_y = left.lines_[left_i](curr_x);
-            Fraction right_y = right.lines_[right_i](curr_x);
-            // Left line on top
-            if (left_y > right_y) {
+        // Left line on top
+        if (left_y > right_y) {
 
-                // No more left points. But there COULD be right points
-                if((left_i == numLeftPts) and (right_i != numRightPts)){
-                    ++right_i;
-                } // No more of either points left
-                else if (left_i == numLeftPts and right_i == numRightPts) {
-                    soln.add(left.lines_.back());
-                    soln.add(intersect(left.lines_.back(), right.lines_.back()));
-                    break;
-                }// 2 cases: Right is out of event points or left point is next
-                else if ((numRightPts == right_i) or left.points_[left_i].x_ < right.points_[right_i].x_) {
-                    // Increment the left line and add to solution
-                    soln.add(left.lines_[left_i]);
-                    soln.add(left.points_[left_i]);
-                    ++left_i;
-                }// Both lines intersect at the same place
-                else if (left.points_[left_i].x_ == right.points_[right_i].x_) {
-                    // Increment the left line and add to solution (its on top)
-                    soln.add(left.lines_[left_i]);
-                    soln.add(left.points_[left_i]);
-                    ++left_i;
-                    // Increment Right line
-                    ++right_i;
-                } else { // Right line is next -  update right without updating soln
-                    ++right_i;
-                }
+            // No more left points. But there COULD be right points
+            if((left_i == numLeftPts) and (right_i != numRightPts)){
+                ++right_i;
+            } // No more of either points left
+            else if (left_i == numLeftPts and right_i == numRightPts) {
+                soln.add(left.lines_.back());
+                soln.add(intersect(left.lines_.back(), right.lines_.back()));
+                break;
+            }// 2 cases: Right is out of event points or left point is next
+            else if ((numRightPts == right_i) or left.points_[left_i].x_ < right.points_[right_i].x_) {
+                // Increment the left line and add to solution
+                soln.add(left.lines_[left_i]);
+                soln.add(left.points_[left_i]);
+                ++left_i;
+            }// Both lines intersect at the same place
+            else if (left.points_[left_i].x_ == right.points_[right_i].x_) {
+                // Increment the left line and add to solution (its on top)
+                soln.add(left.lines_[left_i]);
+                soln.add(left.points_[left_i]);
+                ++left_i;
+                // Increment Right line
+                ++right_i;
+            } else { // Right line is next -  update right without updating soln
+                ++right_i;
+            }
 
-                // Update Current X value
-                if (left_i == numLeftPts and right_i == numRightPts){
-                    // Never found a crossing. Code duplicated. 
-                    Line l = left.lines_[left_i];
-                    Line r = right.lines_[right_i];
-                    soln.add(l);
+            // Update Current X value
+            if (left_i == numLeftPts and right_i == numRightPts){
+                // Never found a crossing. Code duplicated. 
+                Line l = left.lines_[left_i];
+                Line r = right.lines_[right_i];
+                soln.add(l);
 
-                    Point intersection = intersect(l, r);
-                    soln.add(intersection);
-                    break;
-                } else if (left_i == numLeftPts) {
-                    curr_x = right.points_[right_i].x_;
-                } else if (right_i == numRightPts) {
-                    curr_x = left.points_[left_i].x_;
-                } else{
-                    curr_x = min(left.points_[left_i].x_, right.points_[right_i].x_);
+                Point intersection = intersect(l, r);
+                soln.add(intersection);
+                break;
+            } else if (left_i == numLeftPts) {
+                curr_x = right.points_[right_i].x_;
+            } else if (right_i == numRightPts) {
+                curr_x = left.points_[left_i].x_;
+            } else{
+                curr_x = min(left.points_[left_i].x_, right.points_[right_i].x_);
 
-                }
+            }
         } else { // Right line on top -- add left line and terminate. 
             Line l = left.lines_[left_i];
             Line r = right.lines_[right_i];

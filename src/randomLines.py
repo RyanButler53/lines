@@ -1,4 +1,3 @@
-# Goal: Generate random "fractions" or numbers to make cool artwork
 import random
 import numpy as np
 import sys
@@ -11,7 +10,8 @@ def allSlopes(jitterFactor,n):
     for s,i in zip(slopes,intercepts):
         print(s,i)
 
-if len(sys.argv) == 1:
+# Main script
+if len(sys.argv) == 1: # Backward compatibility with original shell script
     allSlopes(7,30)
 else:
     numLines = int(sys.argv[1])

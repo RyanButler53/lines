@@ -8,6 +8,7 @@ WINDOW_SCALE = 0.4
 COLOR_MAPS = ['viridis', 'plasma', 'inferno', 'magma', 'cividis','spring', 
               'summer', 'autumn', 'winter', 'cool', 'Wistia']
 
+# Color Scheme, Retain script only compatibility
 cmap = sys.argv[1]
 if cmap == "random":
     cmap = np.random.choice(COLOR_MAPS) #chooses to random color map
@@ -31,6 +32,7 @@ allPoints = []
 # Resize Figure
 plt.figure(figsize=(9,9))
 
+# Input string alternates between lines and points
 for trail_i in range(1, numTrails * 2, 2):
     lines = inputStr[trail_i].split('|')
     pts = inputStr[trail_i+1].split('|')
@@ -51,6 +53,7 @@ for trail_i in range(1, numTrails * 2, 2):
 color_x =np.linspace(0.0, 1.0, numTrails)
 colors = mpl.colormaps[cmap](color_x)
 
+# Expand Axes
 ax = plt.gca()
 y_lim = ax.get_ylim()
 x_lim = ax.get_xlim()
@@ -60,7 +63,7 @@ change =  np.average(abs(WINDOW_SCALE*lim_arr))
 
 x_min = x_lim[0] - change
 x_max = x_lim[1] + change
-y_min = y_lim[0] - 30*change # 10-15 gets good images
+y_min = y_lim[0] - 30*change
 y_max = y_lim[1] + 30*change
     
 ax.set_xlim([x_min, x_max])
@@ -87,8 +90,8 @@ for toplines, pts,c in zip(allToplines, allPoints, colors):
 
     y_end = evalLine(toplines[-1][0], toplines[-1][1], x_max)
     plt.plot([pts[-1][0], x_max], [pts[-1][1], y_end], color=c, linewidth=3)
-    
+
+# Clean up figure and save
 ax.set_axis_off()
 plt.tight_layout()
-
 plt.savefig(filename)

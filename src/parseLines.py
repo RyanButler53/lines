@@ -52,8 +52,11 @@ class LineParser():
         slope_int_match = re.match(regex,string)
         slope_int = 0
         if slope_int_match:
+            # gets slope or intercept part of string
             slope_int_str = slope_int_match.group(0)
             slope_int_str = slope_int_str.rstrip("x")
+
+            # Check fraction, decimal or integer
             if '/' in slope_int_str:
                 num,den = [int(x) for x in slope_int_str.split("/")]
                 if den == 0:
@@ -75,7 +78,8 @@ class LineParser():
 
 
     def parseString(self,string):
-        """Parses a string and returns slope and intercept as a fraction. """
+        """Parses a string and returns slope and intercept as a fraction.
+         If there is an error, slope or intercept becomes zero """
         slope_regex = r'^-?((\d{0,4}\.\d{1,4})|\d{1,4}|(\d{1,4}\/\d{1,4}))?x'
         intercept_regex = r'^[+-]?((\d{0,4}\.\d{1,4})|\d{1,4}|(\d{1,4}\/\d{1,4}))$'
         slope = 0
@@ -94,6 +98,7 @@ def decToFrac(number:str,decimal:str):
         num = int(number)*den + int(decimal)
     return Fraction(num,den).reduce()
 
+# Main Script
 lines = sys.argv[1:]
 l = LineParser(lines)
 l.evaluate()

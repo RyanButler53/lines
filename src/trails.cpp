@@ -39,6 +39,7 @@ int main(int argc, char** argv){
     linesVector.back() = lines;
     }
 
+    // Solve all trails in parallel.
     TopLines *solnArr = new TopLines[numTrails];
     vector<thread> threads;
     for (size_t tid = 0; tid < numTrails; ++tid)
@@ -48,6 +49,8 @@ int main(int argc, char** argv){
     for (auto& t : threads) {
         t.join();
     }
+
+    // Print out all solutions
     for (TopLines *tl = solnArr; tl < solnArr + numTrails; ++tl){
         cout << *tl << endl;
     }

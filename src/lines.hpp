@@ -10,12 +10,18 @@ struct Line
     Fraction slope_;
     Fraction intercept_;
 
+    // Line Constructors
     Line(Fraction slope, Fraction intercept);
     Line(long long slope, long long intercept);
+
+    // Line comparison operators
     bool operator<(const Line &l) const;
+    bool operator==(const Line &other) const;
+
+    // Line Evaluation operators
     Fraction operator()(const Fraction x) const;
     Fraction operator()(const long long x) const;
-    bool operator==(const Line &other) const;
+
 };
 
 struct Point
@@ -34,23 +40,29 @@ struct TopLines
     std::vector<Line> lines_;
     std::vector<Point> points_;
 
+    // Constructors 
     TopLines() = default;
     TopLines(std::string filename);
     TopLines(std::vector<Line> lns, std::vector<Point> pts);
+
+    // Overloaded adding
     void add(Point p);
     void add(Line l);
+
+    // Comparison for testing
     bool operator==(const TopLines &other) const;
 };
 
 // Finds the intersection point between two lines
 Point intersect(const Line& l1, const Line& l2);
 
+// Solves the intersecting lines problem
 TopLines intersecting_lines(std::vector<Line> &lines);
 
 // Recursive Helper
 TopLines intersecting_lines(std::vector<Line>& lines, size_t startInd, size_t endInd);
 
-// Combines
+// Combines 2 solutions
 TopLines combine_lines(TopLines &left, TopLines &right);
 
 // Lines From File or Stdin

@@ -13,15 +13,19 @@ def evalLine(slope, intercept, x):
 points = []
 toplines = []
 inputstr = sys.stdin.readlines()
+
+# Input string is divided into 3 parts:
+# Lines on top, points on top, All lines
 toplines = inputstr[0].split('|')
 points = inputstr[1].split('|')
 all_lines = inputstr[2:]
 all_lines = map(eval, all_lines)
 
+# Convert to tuples
 toplines = [eval(l.strip()) for l in toplines[:-1]]
 points = [eval(p.strip()) for p in points[:-1]]
 
-# Plot Points
+# Plot Top Points
 x_s = [p[0] for p in points]
 y_s = [p[1] for p in points]
 
@@ -44,13 +48,12 @@ ax.set_xlim([x_min, x_max])
 ax.set_ylim([y_min, y_max])
 
 #Draw all lines
-
 for (slope, intercept) in all_lines:
     y1 = evalLine(slope, intercept, x_min)
     y2 = evalLine(slope, intercept, x_max)
-
     plt.plot([x_min,x_max], [y1,y2],color = "black", linewidth=0.5)
 
+# Draw Dotted red line over top lines
 for i in range(len(points)-1):
     x,y = points[i]
     next_x,next_y = points[i+1]

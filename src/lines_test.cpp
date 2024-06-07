@@ -60,6 +60,7 @@ TEST(BaseCases, BaseCase3Lines2) {
     TopLines soln = intersecting_lines(input, 0, 3);
     EXPECT_EQ(expected, soln);
 }
+
 TEST(BaseCases, BaseCase2AllIntersect){
     std::vector<Line> input{Line{Fraction{"-1/2"},Fraction{"5/2"}}, Line{0, 2}, Line{1,1}};
 
@@ -69,6 +70,8 @@ TEST(BaseCases, BaseCase2AllIntersect){
     TopLines soln = intersecting_lines(input, 0, 3);
     EXPECT_EQ(expected, soln);
 }
+
+// CombineLines tests many cases of the combine_lines function
 
 TEST(CombineLines, Test1){
     TopLines left{"../inputs/combine1l.txt"};
@@ -167,7 +170,7 @@ TEST(FullDC, TripleOverlapCase){
     EXPECT_EQ(expected, soln);
 }
 
-// recursive case 4 lines
+// Full example on 4 lines
 TEST(FullDC, Recursive4lines) {
     std::vector<Line> input = linesFromFile("../inputs/4lines.txt");
     std::sort(input.begin(), input.end());
@@ -177,7 +180,7 @@ TEST(FullDC, Recursive4lines) {
     EXPECT_EQ(expected, soln);
 }
 
-// recursive case 9 lines
+// Full example on 9 lines
 TEST(FullDC, Recursive9lines) {
     std::vector<Line> input = linesFromFile("../inputs/9lines.txt");
     std::sort(input.begin(), input.end());

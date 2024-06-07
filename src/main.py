@@ -77,6 +77,7 @@ class MainWindow(QMainWindow):
 
 
     def add_line_box(self):
+        """Adds a line box to the left layout"""
         numLines = len(self.lineBoxes)
         if (numLines > 24):
             return
@@ -87,6 +88,7 @@ class MainWindow(QMainWindow):
         self.leftLayout.addLayout(leftLayout)
 
     def make_title(self,text):
+        """Makes a reasonable size title"""
         title = QLabel(text)
         font = title.font()
         font.setPointSize(20)
@@ -95,6 +97,7 @@ class MainWindow(QMainWindow):
         return title
     
     def visualize(self):
+        """Calls the script ot visualize manually inputted lines"""
         lines = []
         for layout in self.lineBoxes:
             box = layout.itemAt(1).widget()
@@ -108,6 +111,7 @@ class MainWindow(QMainWindow):
 
 
     def clear(self):
+        """TODO: Clear all cells"""
         pass
 
 
@@ -146,6 +150,7 @@ class MainWindow(QMainWindow):
         rightGrid.addWidget(field,2,1)
         self.rightWidgets.append(field)
 
+        # Randomness level
         rightGrid.addWidget(QLabel("Randomness Level"),3,0)
         slider = QSlider(Qt.Orientation.Horizontal)
         slider.setRange(0,7)
@@ -169,7 +174,7 @@ class MainWindow(QMainWindow):
         self.rightLayout.addWidget(generateButton)
 
     def generateArt(self):
-        # Need to get number of lines, max 50
+        """Generates the random art from right tab"""
         numLines = self.getNumLines()
         color = self.rightWidgets[1].currentText()
         numTrails = self.getNumTrails(numLines)
@@ -205,7 +210,6 @@ class MainWindow(QMainWindow):
             numTrails = numLines//2
         return numTrails
 
-# Create a Qt widget, which will be our window.
 window = MainWindow()
 window.show()  
 
