@@ -132,9 +132,9 @@ TopLines::TopLines(std::string filename):
             Fraction part2frac = Fraction(part2);
     
             if (points){
-                points_.push_back(Point{part1frac, part1frac});
+                points_.push_back(Point{part1frac, part2frac});
             } else {
-                lines_.push_back(Line{part2frac, part2frac});
+                lines_.push_back(Line{part1frac, part2frac});
             }
         } else {
             assert(!points);
