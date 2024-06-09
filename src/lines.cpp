@@ -266,12 +266,6 @@ TopLines combine_lines(TopLines& left, TopLines& right){
             // Update Current X value
             if (left_i == numLeftPts and right_i == numRightPts){
                 // Never found a crossing. Code duplicated. 
-                Line l = left.lines_[left_i];
-                Line r = right.lines_[right_i];
-                soln.add(l);
-
-                Point intersection = intersect(l, r);
-                soln.add(intersection);
                 break;
             } else if (left_i == numLeftPts) {
                 curr_x = right.points_[right_i].x_;
@@ -281,22 +275,20 @@ TopLines combine_lines(TopLines& left, TopLines& right){
                 curr_x = min(left.points_[left_i].x_, right.points_[right_i].x_);
 
             }
-        } else { // Right line on top -- add left line and terminate. 
-            Line l = left.lines_[left_i];
-            Line r = right.lines_[right_i];
-            soln.add(l);
-
-            Point intersection = intersect(l, r);
-            soln.add(intersection);
-            // assert(right_i < numRightPts);
-            if (right_i < numRightPts and intersection == right.points_[right_i])
-            {
-                ++right_i;
-            }
+        } else { // Right line on top -- add left line and terminate.
             break;
         }
     }
+    Line l = left.lines_[left_i];
+    Line r = right.lines_[right_i];
+    soln.add(l);
 
+    Point intersection = intersect(l, r);
+    soln.add(intersection);
+
+    if (right_i < numRightPts and intersection == right.points_[right_i]) {
+        ++right_i;
+    }
     // Finish by adding all right points and lines
     for (; right_i < numRightPts; ++right_i){
         soln.add(right.points_[right_i]);
@@ -305,5 +297,3 @@ TopLines combine_lines(TopLines& left, TopLines& right){
     soln.add(right.lines_.back());
     return soln;
 }
-
-  
