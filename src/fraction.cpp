@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <numeric>
 #include <ostream>
+#include <cassert>
 
 using namespace std;
 

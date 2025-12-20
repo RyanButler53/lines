@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "lines.hpp"  
+#include <algorithm>
 #include "fraction.hpp"
 
 TEST(Lines, LineClass) {

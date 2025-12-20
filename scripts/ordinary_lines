@@ -1,4 +1,4 @@
 #!/bin/bash
 
-python src/parseLines.py $* | build/toplines | python "src/image.py";
+python3 src/parseLines.py $* | build/toplines | python3 "src/image.py";
 open images/figure1.png

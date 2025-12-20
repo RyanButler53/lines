@@ -107,6 +107,7 @@ class MainWindow(QMainWindow):
         args = ['scripts/ordinary_lines']
         for l in lines:
             args.append(l)
+        print(args)
         subprocess.call(args)
 
 

@@ -2,8 +2,7 @@
 #include <ostream>
 #include "fraction.hpp"
 
-#ifndef LINES_HPP_INCLUDED
-#define LINES_HPP_INCLUDED
+#pragma once
 
 struct Line
 {
@@ -76,4 +75,3 @@ std::ostream &operator<<(std::ostream& os, const Point &p);
 
 std::ostream &operator<<(std::ostream& os, const TopLines &tl);
 
-#endif // LINES_HPP_INCLUDED

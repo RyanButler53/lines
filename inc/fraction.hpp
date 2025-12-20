@@ -1,7 +1,7 @@
 #include <string>
 
-#ifndef FRACTION_HPP_INCLUDED
-#define FRACTION_HPP_INCLUDED
+#pragma once
+
 struct Fraction{
 
     long long num_;
@@ -35,5 +35,3 @@ Fraction operator/(const Fraction &left, const Fraction &right);
 
 // Printing
 std::ostream &operator<<(std::ostream &os, const Fraction &f);
-
-#endif // FRACTION_HPP_INCLUDED
