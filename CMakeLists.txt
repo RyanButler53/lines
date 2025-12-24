@@ -42,7 +42,7 @@ find_package(nanobind CONFIG REQUIRED)
 # We are now ready to compile the actual extension module
 nanobind_add_module(
   # Name of the extension
-  nanobind_example_ext
+  lines_ext
 
   # Target the stable ABI for Python 3.12+, which reduces
   # the number of binary wheels that must be built. This
@@ -58,9 +58,9 @@ nanobind_add_module(
   NB_STATIC
 
   # Source code goes here
-  src/nanobind_example_ext.cpp
+  src/lines_ext.cpp
 )
 
-target_link_libraries(nanobind_example_ext PRIVATE lines)
+target_link_libraries(lines_ext PRIVATE lines)
 # Install directive for scikit-build-core
-install(TARGETS nanobind_example_ext LIBRARY DESTINATION nanobind_example)
+install(TARGETS lines_ext LIBRARY DESTINATION nanobind_example)

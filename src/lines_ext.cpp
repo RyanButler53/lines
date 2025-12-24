@@ -9,7 +9,7 @@ namespace nb = nanobind;
 
 using namespace nb::literals;
 
-NB_MODULE(nanobind_example_ext, m) {
+NB_MODULE(lines_ext, m) {
     m.doc() = "Bindings for the lines problem with nanobind";
 
     // toplines 
