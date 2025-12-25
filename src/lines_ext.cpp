@@ -23,6 +23,7 @@ NB_MODULE(lines_ext, m) {
         return s.str();
      })
     .def("simplify", &Fraction::simplify)
+    .def("to_float", &Fraction::toFloat)
     .def_rw("num", &Fraction::num_)
     .def_rw("den", &Fraction::den_);
 
@@ -52,7 +53,7 @@ NB_MODULE(lines_ext, m) {
     .def(nb::init<>())
     .def(nb::init<std::string>())
     .def(nb::init<std::vector<Line>, std::vector<Point>>())
-    .def("__repr__", [](const Fraction &t) -> std::string { 
+    .def("__repr__", [](const TopLines &t) -> std::string { 
         std::stringstream s; 
         s << t; 
         return s.str();
@@ -67,4 +68,8 @@ NB_MODULE(lines_ext, m) {
         TopLines soln = intersecting_lines(lines);
         return soln;
     }, "filename"_a);
+
+    m.def("intersecting_lines", [](std::vector<Line>& lines){
+        return intersecting_lines(lines);
+    }, "lines"_a);
 }

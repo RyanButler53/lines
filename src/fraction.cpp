@@ -29,6 +29,10 @@ Fraction::Fraction(string s){
     }
 }
 
+float Fraction::toFloat() const{
+    return float(num_) / float(den_);
+}
+
 std::ostream &operator<<(std::ostream &os, const Fraction &f){
     if (f.den_ == 1){
         os << f.num_;

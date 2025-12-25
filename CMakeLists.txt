@@ -63,4 +63,4 @@ nanobind_add_module(
 
 target_link_libraries(lines_ext PRIVATE lines)
 # Install directive for scikit-build-core
-install(TARGETS lines_ext LIBRARY DESTINATION nanobind_example)
+install(TARGETS lines_ext LIBRARY DESTINATION py_lines)
