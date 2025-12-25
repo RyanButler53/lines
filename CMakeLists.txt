@@ -9,7 +9,7 @@ target_include_directories(lines PUBLIC inc)
 set_target_properties(lines PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 if (SKBUILD)
-  message(STATUS "Building Python Bindings)
+  message(STATUS "Building Python Bindings")
   if (NOT SKBUILD)
     message(WARNING "\
     This CMake file is meant to be executed using 'scikit-build'. Running
@@ -68,6 +68,6 @@ if (SKBUILD)
   install(TARGETS lines_ext LIBRARY DESTINATION py_lines)
 
 else()
-  message (Building Unit Tests)
+  message (STATUS "Building Unit Tests")
   add_subdirectory(tests)
 endif()
