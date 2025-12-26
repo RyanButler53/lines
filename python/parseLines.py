@@ -44,7 +44,6 @@ class LineParser():
         lines = []
         for s in self.strings:
             slope,intercept = self.parseString(s)
-            print(slope, intercept, s, type(slope), type(intercept))
             lines.append(pl.Line(slope, intercept))
         return lines
 

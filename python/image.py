@@ -20,7 +20,7 @@ def plot(toplines:pl.toplines, all_lines):
     x_s = [p.x.to_float() for p in points]
     y_s = [p.y.to_float() for p in points]
 
-    plt.scatter(x_s, y_s, marker="o",color='black')
+    plt.scatter(x_s, y_s, marker="o", color='black')
 
     # Get window parameters and expand
     ax = plt.gca()
@@ -40,7 +40,6 @@ def plot(toplines:pl.toplines, all_lines):
 
     #Draw all lines
     for l in all_lines:
-        print(f"Line: {l}")
         y1 = evalLine(l.slope.to_float(), l.intercept.to_float(), x_min)
         y2 = evalLine(l.slope.to_float(), l.intercept.to_float(), x_max)
         plt.plot([x_min,x_max], [y1,y2],color = "black", linewidth=0.5)
@@ -60,3 +59,5 @@ def plot(toplines:pl.toplines, all_lines):
 
     plt.tight_layout()
     plt.savefig("./figure1.png")
+
+# Plot the "trails" system

@@ -52,19 +52,25 @@ struct TopLines
     bool operator==(const TopLines &other) const;
 };
 
-// Finds the intersection point between two lines
+/// @brief Finds the intersection point between two lines
 Point intersect(const Line& l1, const Line& l2);
 
-// Solves the intersecting lines problem
+/// @brief Sorts the lines and removes lines with duplicate slopes
+std::vector<Line> clean_lines(std::vector<Line>& lines);
+
+/// @brief Solves the intersecting lines problem
 TopLines intersecting_lines(std::vector<Line> &lines);
 
-// Recursive Helper
-TopLines intersecting_lines(std::vector<Line>& lines, size_t startInd, size_t endInd);
+/// @brief Recursive Helper
+TopLines intersecting_lines(const std::vector<Line>& lines, size_t startInd, size_t endInd);
 
-// Combines 2 solutions
+/// @brief Combines 2 solutions
 TopLines combine_lines(TopLines &left, TopLines &right);
 
-// Lines From File or Stdin
+/// @brief Splits the lines up into numTrails segments and solves the corresponding toplines problems
+std::vector<TopLines> trails(std::vector<Line>& lines, int numTrails, bool separate);
+
+/// @brief Lines From File or Stdin
 std::vector<Line> linesFromFile(std::string filename);
 void processLine(std::string &line, std::vector<Line> &lines);
 

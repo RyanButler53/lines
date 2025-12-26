@@ -79,11 +79,12 @@ NB_MODULE(lines_ext, m) {
         return intersecting_lines(lines);
     }, "filename"_a, "Reads lines from a file and returns the top lines and points for the problem");
 
-    m.def("lines_from_file", [](std::filesystem::path filename){
-        return linesFromFile(filename);
-    }, "filename"_a, "Filename to read lines from");
+    m.def("lines_from_file", &linesFromFile, "filename"_a, "Filename to read lines from");
 
     m.def("intersecting_lines", [](std::vector<Line>& lines){
         return intersecting_lines(lines);
     }, "lines"_a, "Takes the list of lines and solves for the top lines.");
+
+    m.def("trails", &trails, "lines"_a, "num_trails"_a, "separate"_a,
+         "Solves numTrails top lines problems to create trails through the lines");
 }

@@ -1,11 +1,23 @@
-// THE LINES PROBLEM
+/**
+ * @file lines.cpp
+ * @author Ryan Butler
+ * @brief Solves the Lines Problem and implements the structs to do so
+ * @version 0.1
+ * @date 2025-12-25
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
 #include <iostream>
 #include "lines.hpp"
 #include "fraction.hpp"
 #include <algorithm>
 #include <fstream>
 #include <cassert>
-using namespace std;
+#include <thread>
+#include <future>
+#include <format>
+#include <utility>
 
 // Line Class
 Line::Line(Fraction slope, Fraction intercept):
@@ -36,7 +48,7 @@ bool Line::operator==(const Line& other) const {
 }
 
 std::ostream &operator<<(std::ostream& os, const Line &l){
-    os << "(" << l.slope_ << "," << l.intercept_ << ")";
+    os << "y =" << l.slope_ << "x + " << l.intercept_;
     return os;
 }
 
@@ -63,9 +75,9 @@ std::ostream &operator<<(std::ostream& os, const Point &p){
 
 void processLine(std::string& line, std::vector<Line>& lines){
     size_t spaceInd = line.find(" ");
-    if (spaceInd != string::npos){
-        string slope = line.substr(0, spaceInd);
-        string intercept = line.substr(spaceInd + 1);
+    if (spaceInd != std::string::npos){
+        std::string slope = line.substr(0, spaceInd);
+        std::string intercept = line.substr(spaceInd + 1);
         Fraction lineSlope = Fraction(slope);
         Fraction lineIntercept = Fraction(intercept);
 
@@ -78,14 +90,13 @@ void processLine(std::string& line, std::vector<Line>& lines){
 
 std::vector<Line> linesFromFile(std::string filename){
 
-    ifstream input;
-    string line;
+    std::ifstream input;
+    std::string line;
     std::vector<Line> lines;
     if (filename != "") {
-        ifstream input = ifstream{filename};
+        std::ifstream input = std::ifstream{filename};
         if (!input.is_open()){
-            cerr << "Unable to open " << filename << endl;
-            exit(1);
+            throw std::invalid_argument(std::format("Unable to open {}", filename));
         }
         while (getline(input, line)) {
             processLine(line, lines);
@@ -106,15 +117,14 @@ Point intersect(const Line& l1, const Line& l2){
 }
 
 // Top Lines Class (Solution)
-TopLines::TopLines(vector<Line> lns, vector<Point> pts):
+TopLines::TopLines(std::vector<Line> lns, std::vector<Point> pts):
      lines_{lns}, points_{pts}{}
 
-TopLines::TopLines(std::string filename):
-    lines_{vector<Line>()}, points_{vector<Point>()}
+TopLines::TopLines(std::string filename)
     {
     // TopLines solution;
-    ifstream input{filename};
-    string line;
+    std::ifstream input{filename};
+    std::string line;
     bool points = false;
     while (getline(input, line))
     {
@@ -123,9 +133,9 @@ TopLines::TopLines(std::string filename):
             continue;
         }
         size_t spaceInd = line.find(" ");
-        if (spaceInd != string::npos){
-            string part1 = line.substr(0, spaceInd); // slope or x
-            string part2 = line.substr(spaceInd + 1); // intercept or y
+        if (spaceInd != std::string::npos){
+            std::string part1 = line.substr(0, spaceInd); // slope or x
+            std::string part2 = line.substr(spaceInd + 1); // intercept or y
 
             Fraction part1frac = Fraction(part1);
             Fraction part2frac = Fraction(part2);
@@ -157,26 +167,26 @@ bool TopLines::operator==(const TopLines &other) const{
 
 std::ostream &operator<<(std::ostream& os, const TopLines &tl){
     for (const Line& l: tl.lines_){
-        os << l << "| ";
+        os << l << ", ";
     }
-    os << endl;
+    os << "\n";
     for (const Point& p : tl.points_){
-        os << p << "| ";
+        os << p << ", ";
     }
     return os;
 }
 
-TopLines intersecting_lines(vector<Line> &lines){
+std::vector<Line> clean_lines(std::vector<Line> &lines){
     std::sort(lines.begin(), lines.end());
 
     // No two lines can have the same slope. 
     std::vector<Line> uniqueLines;
     for (size_t i = 0; i < lines.size()-1;++i){
         if (lines[i].slope_ == lines[i+1].slope_){
-            cerr << "Lines " << "y = " << lines[i].slope_
+            std::cerr << "Lines " << "y = " << lines[i].slope_
                  << "x + " << lines[i].intercept_ << " and y = "
                  << lines[i + 1].slope_ << "x + " << lines[i + 1].intercept_
-                 << " have the same slope" << endl;
+                 << " have the same slope" << std::endl;
             uniqueLines.push_back(lines[i]);
             ++i;
         } else {
@@ -186,28 +196,33 @@ TopLines intersecting_lines(vector<Line> &lines){
     if (lines.back().slope_ != uniqueLines.back().slope_){
         uniqueLines.push_back(lines.back());
     }
+    return uniqueLines;
+}
+
+TopLines intersecting_lines(std::vector<Line> &lines){
+    std::vector uniqueLines = clean_lines(lines);
     return intersecting_lines(uniqueLines, 0, uniqueLines.size());
 }
 
-TopLines intersecting_lines(vector<Line>& lines, size_t startInd, size_t endInd){
+TopLines intersecting_lines(const std::vector<Line>& lines, size_t startInd, size_t endInd){
     // Base Cases: 2 and 3 lines
     if (endInd - startInd == 2){
-        vector<Line> solnLines{lines[startInd], lines[startInd + 1]};
+        std::vector<Line> solnLines{lines[startInd], lines[startInd + 1]};
         Point intPoint = intersect(lines[startInd], lines[startInd + 1]);
-        return TopLines(solnLines, vector<Point>{intPoint});
+        return TopLines(solnLines, {intPoint});
     } else if (endInd - startInd == 3){
-        Line &l1 = lines[startInd];
-        Line &l2 = lines[startInd+1];
-        Line &l3 = lines[startInd+2];
+        const Line &l1 = lines[startInd];
+        const Line &l2 = lines[startInd+1];
+        const Line &l3 = lines[startInd+2];
         Point l1l3_intersect = intersect(l1, l3);
         if (l1l3_intersect.y_ >= l2(l1l3_intersect.x_)){
             // 2 lines case
-            return TopLines(vector<Line>{l1, l3}, vector<Point>{l1l3_intersect});
+            return TopLines({l1, l3}, {l1l3_intersect});
         } else { // 3 lines case
             Point l1l2 = intersect(l1, l2);
             Point l2l3 = intersect(l2, l3);
             assert(l1l2.x_ < l2l3.x_);
-            return TopLines(vector<Line>{l1, l2, l3}, vector<Point>{l1l2, l2l3});
+            return TopLines({l1, l2, l3}, {l1l2, l2l3});
         }
     } else {
         // Recursive Case
@@ -227,7 +242,7 @@ TopLines combine_lines(TopLines& left, TopLines& right){
     size_t numRightPts = right.points_.size();
     assert(right_i < numRightPts);
     assert(left_i < numLeftPts);
-    Fraction curr_x = min(right.points_[right_i].x_, left.points_[left_i].x_);
+    Fraction curr_x = std::min(right.points_[right_i].x_, left.points_[left_i].x_);
     while (true){
         // Evaluate at current x
         Fraction left_y = left.lines_[left_i](curr_x);
@@ -271,7 +286,7 @@ TopLines combine_lines(TopLines& left, TopLines& right){
             } else if (right_i == numRightPts) {
                 curr_x = left.points_[left_i].x_;
             } else{
-                curr_x = min(left.points_[left_i].x_, right.points_[right_i].x_);
+                curr_x = std::min(left.points_[left_i].x_, right.points_[right_i].x_);
 
             }
         } else { // Right line on top -- add left line and terminate.
@@ -295,4 +310,40 @@ TopLines combine_lines(TopLines& left, TopLines& right){
     }
     soln.add(right.lines_.back());
     return soln;
+}
+
+std::vector<TopLines> trails(std::vector<Line>& lines, int numTrails, bool separate){
+
+    lines = clean_lines(lines);
+    std::vector<std::pair<size_t, size_t>> startEndInds;
+    
+    // Separate trails: Partition the n lines into t parts and solve each toplines problem separately. 
+    // Compounded Trails: Start with n/t lines and solve the toplines problem. Add t lines and solve the corresponding problem.
+    size_t perTrail = lines.size() / numTrails;
+    if (separate){ // Separate Trails
+        for (size_t i = 0; i < numTrails; ++i) { 
+            startEndInds.push_back({perTrail * i , perTrail * (i + 1)});
+        }
+    } else { // Compounding Trails
+        for (size_t i = 0; i < numTrails; ++i){
+            startEndInds.push_back({0, i * perTrail});
+        }
+    }
+
+    // Set last index to final line to catch non divisible case. 
+    startEndInds.back().second = lines.size();
+
+    // Solve all trails in parallel.
+    std::vector<TopLines> solutions;
+    std::vector<std::future<TopLines>> lineFutures;
+    for (auto [start, end] : startEndInds)
+    {
+        auto f = std::async(std::launch::async, [&lines, start, end](){return intersecting_lines(lines, start,end);});
+        lineFutures.push_back(std::move(f));
+    }
+    for (auto& f : lineFutures) {
+        solutions.push_back(f.get());
+    }
+    return solutions;
+
 }

@@ -16,6 +16,7 @@ from PyQt6.QtWidgets import (
 import subprocess
 import toplines
 import image
+import trails
 
 COLOR_MAPS = ['random', 'viridis', 'plasma', 'inferno', 'magma', 'cividis','spring', 
               'summer', 'autumn', 'winter', 'cool', 'Wistia']
@@ -182,9 +183,9 @@ class MainWindow(QMainWindow):
         jitter = self.rightWidgets[3].value()
         filename = self.rightWidgets[4].text().rstrip(".png")
         if filename == "":
-            filename = "images/trails"
-        args = [str(arg) for arg in [numLines, color, numTrails, jitter, filename+".png"]]
-        subprocess.call(["scripts/trails"] + args)
+            filename = "trails.png"
+        all, top= toplines.trails(numTrails, numLines, jitter)
+        trails.plotTrails(top, all, color, filename)
 
     def getNumLines(self):
         try:
