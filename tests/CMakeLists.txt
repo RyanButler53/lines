@@ -6,16 +6,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-enable_testing()
-
+include(GoogleTest)
 macro ( addLinesTest testname src)
     add_executable("${testname}_test" ${src})
+    gtest_add_tests(TARGET "${testname}_test" SOURCES ${src} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     target_link_libraries("${testname}_test" lines GTest::gtest_main)
-endmacro()
+
+  endmacro()
 
 addLinesTest(fraction fraction_test.cpp)
 addLinesTest(lines lines_test.cpp)
-
-include(GoogleTest)
-gtest_discover_tests(lines_test)
-gtest_discover_tests(fraction_test)

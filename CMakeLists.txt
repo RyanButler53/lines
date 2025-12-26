@@ -69,5 +69,6 @@ if (SKBUILD)
 
 else()
   message (STATUS "Building Unit Tests")
+  enable_testing()
   add_subdirectory(tests)
 endif()
