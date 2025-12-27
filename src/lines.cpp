@@ -9,8 +9,8 @@
  * 
  */
 #include <iostream>
-#include "lines.hpp"
-#include "fraction.hpp"
+#include "lines/lines.hpp"
+#include "lines/fraction.hpp"
 #include <algorithm>
 #include <fstream>
 #include <functional>
@@ -90,8 +90,6 @@ void processLine(std::string& line, std::vector<Line>& lines){
 }
 
 std::vector<Line> linesFromFile(std::string filename){
-
-    std::ifstream input;
     std::string line;
     std::vector<Line> lines;
     std::ifstream input = std::ifstream{filename};

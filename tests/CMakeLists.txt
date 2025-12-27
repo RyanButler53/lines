@@ -11,6 +11,7 @@ macro ( addLinesTest testname src)
     add_executable("${testname}_test" ${src})
     gtest_add_tests(TARGET "${testname}_test" SOURCES ${src} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     target_link_libraries("${testname}_test" lines GTest::gtest_main)
+    
 
   endmacro()
 

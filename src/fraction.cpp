@@ -1,4 +1,4 @@
-#include "fraction.hpp"
+#include "lines/fraction.hpp"
 #include <algorithm>
 #include <numeric>
 #include <ostream>

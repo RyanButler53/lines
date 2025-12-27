@@ -1,7 +1,7 @@
-#include <gtest/gtest.h>
-#include "lines.hpp"  
 #include <algorithm>
-#include "fraction.hpp"
+#include <gtest/gtest.h>
+#include "lines/lines.hpp"  
+#include "lines/fraction.hpp"
 
 TEST(Lines, LineClass) {
     Line l1 = Line(1, 3);

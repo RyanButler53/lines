@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "fraction.hpp"
+#include "lines/fraction.hpp"
 
 // Test constructor and simplify method
 TEST(FractionTest, Simplify) {

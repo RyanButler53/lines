@@ -5,7 +5,7 @@
 #include <nanobind/operators.h>
 #include <sstream>
 #include <string>
-#include "lines.hpp"
+#include "lines/lines.hpp"
 namespace nb = nanobind;
 
 using namespace nb::literals;
