@@ -106,6 +106,8 @@ class MainWindow(QMainWindow):
             text = box.text()
             if text != "":
                 lines.append(text)
+        if len(lines) < 2:
+            return
         all, top= toplines.toplines(lines)
         image.plot(top, all)
 
@@ -159,12 +161,18 @@ class MainWindow(QMainWindow):
         rightGrid.addWidget(slider,3,1)
         self.rightWidgets.append(slider)
 
+        #Separate vs Compounding
+        rightGrid.addWidget(QLabel("Trail Generation Strategy"),4,0)
+        strat_dropdown = QComboBox()
+        strat_dropdown.addItems(["Separate", "Compounding"])
+        rightGrid.addWidget(strat_dropdown,4,1)
+        self.rightWidgets.append(strat_dropdown)
 
         # Output filename
-        rightGrid.addWidget(QLabel("Output Filename"),4,0)
+        rightGrid.addWidget(QLabel("Output Filename"),5,0)
         output = QLineEdit()
         output.setPlaceholderText("image.png")
-        rightGrid.addWidget(output,4,1)
+        rightGrid.addWidget(output,5,1)
         self.rightWidgets.append(output)
 
         self.rightLayout.addLayout(rightGrid)
@@ -181,10 +189,11 @@ class MainWindow(QMainWindow):
         numTrails = self.getNumTrails(numLines)
         
         jitter = self.rightWidgets[3].value()
-        filename = self.rightWidgets[4].text().rstrip(".png")
+        separate = self.rightWidgets[4].currentText() == "separate"
+        filename = self.rightWidgets[5].text().rstrip(".png")
         if filename == "":
             filename = "trails.png"
-        all, top= toplines.trails(numTrails, numLines, jitter)
+        all, top= toplines.trails(numTrails, numLines, jitter, separate)
         trails.plotTrails(top, all, color, filename)
 
     def getNumLines(self):

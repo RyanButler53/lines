@@ -325,7 +325,7 @@ std::vector<TopLines> trails(std::vector<Line>& lines, int numTrails, bool separ
             startEndInds.push_back({perTrail * i , perTrail * (i + 1)});
         }
     } else { // Compounding Trails
-        for (size_t i = 0; i < numTrails; ++i){
+        for (size_t i = 1; i < numTrails + 1; ++i){
             startEndInds.push_back({0, i * perTrail});
         }
     }

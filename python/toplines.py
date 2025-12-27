@@ -10,6 +10,6 @@ def toplines(lines):
     parsed = parser.getLines()
     return parsed, pl.intersecting_lines(parsed)
 
-def trails(numTrails = 4, numLines=30, jitter = 7, separate = True):
+def trails(numTrails, numLines, jitter, separate):
     lines = randomLines.allSlopes(jitter, numLines)
     return lines, pl.trails(lines, numTrails, separate)
