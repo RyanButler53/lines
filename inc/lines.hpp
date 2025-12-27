@@ -67,7 +67,16 @@ TopLines intersecting_lines(const std::vector<Line>& lines, size_t startInd, siz
 /// @brief Combines 2 solutions
 TopLines combine_lines(TopLines &left, TopLines &right);
 
-/// @brief Splits the lines up into numTrails segments and solves the corresponding toplines problems
+/**
+ * @brief Splits the lines up and creates different "trails" of top lines
+ * @details There are two ways to split: Separate (separate = true) and Compounding (separate = false)
+ * Separate means splitting up by solving different chunks of size n/t.
+ * Compounding means getting the first n/t, then first n/t + second n/t and so on
+ * @param lines All lines. n
+ * @param numTrails Number of topline trails to get (t)
+ * @param separate True
+ * @return std::vector<TopLines> Toplines of the split up toplines problem
+ */
 std::vector<TopLines> trails(std::vector<Line>& lines, int numTrails, bool separate);
 
 /// @brief Lines From File or Stdin

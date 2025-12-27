@@ -13,6 +13,7 @@
 #include "fraction.hpp"
 #include <algorithm>
 #include <fstream>
+#include <functional>
 #include <cassert>
 #include <thread>
 #include <future>
@@ -93,18 +94,12 @@ std::vector<Line> linesFromFile(std::string filename){
     std::ifstream input;
     std::string line;
     std::vector<Line> lines;
-    if (filename != "") {
-        std::ifstream input = std::ifstream{filename};
-        if (!input.is_open()){
-            throw std::invalid_argument(std::format("Unable to open {}", filename));
-        }
-        while (getline(input, line)) {
-            processLine(line, lines);
-        }
-    } else {
-        while (getline(std::cin, line)) {
-            processLine(line, lines);
-        }
+    std::ifstream input = std::ifstream{filename};
+    if (!input.is_open()){
+        throw std::invalid_argument(std::format("Unable to open {}", filename));
+    }
+    while (getline(input, line)) {
+        processLine(line, lines);
     }
     return lines;
 }
@@ -312,38 +307,49 @@ TopLines combine_lines(TopLines& left, TopLines& right){
     return soln;
 }
 
-std::vector<TopLines> trails(std::vector<Line>& lines, int numTrails, bool separate){
+std::vector<TopLines> trails(std::vector<Line>& lines, int numTrails, bool separate){    
+    // Threading Functions 
+    std::vector<std::function<TopLines()>> launchFuncs;
+    // Must be declared at this scope 
+    std::vector<std::vector<Line>> linesVector(numTrails);
 
-    lines = clean_lines(lines);
-    std::vector<std::pair<size_t, size_t>> startEndInds;
-    
-    // Separate trails: Partition the n lines into t parts and solve each toplines problem separately. 
-    // Compounded Trails: Start with n/t lines and solve the toplines problem. Add t lines and solve the corresponding problem.
-    size_t perTrail = lines.size() / numTrails;
     if (separate){ // Separate Trails
+        lines = clean_lines(lines);
+        size_t perTrail = lines.size() / numTrails;
+        std::vector<std::pair<size_t, size_t>> startEndInds;
         for (size_t i = 0; i < numTrails; ++i) { 
             startEndInds.push_back({perTrail * i , perTrail * (i + 1)});
         }
+        // Set last index to final line to catch non divisible case. 
+        startEndInds.back().second = lines.size();
+
+        for (auto& [start, end] : startEndInds){
+            launchFuncs.push_back([&lines, start, end](){return intersecting_lines(lines, start,end);});
+        }
+
     } else { // Compounding Trails
-        for (size_t i = 1; i < numTrails + 1; ++i){
-            startEndInds.push_back({0, i * perTrail});
+        for (size_t i = 0; i < numTrails-1; ++i){
+            size_t bound = (lines.size() / numTrails) * (i + 1);
+            std::cout << "j: " << 0 << " bound: " << bound << std::endl;
+            for (size_t j = 0; j < bound;++j){
+                linesVector[i].push_back(lines[j]);
+            }
+        }
+        linesVector.back() = lines;
+        for (std::vector<Line>& problem : linesVector){
+            launchFuncs.push_back(std::move([&problem](){return intersecting_lines(problem);}));
         }
     }
 
-    // Set last index to final line to catch non divisible case. 
-    startEndInds.back().second = lines.size();
-
-    // Solve all trails in parallel.
-    std::vector<TopLines> solutions;
+    // launch threads
     std::vector<std::future<TopLines>> lineFutures;
-    for (auto [start, end] : startEndInds)
-    {
-        auto f = std::async(std::launch::async, [&lines, start, end](){return intersecting_lines(lines, start,end);});
+    std::vector<TopLines> solutions;
+    for (auto& launchFunc : launchFuncs) {
+        auto f = std::async(std::launch::async, launchFunc);
         lineFutures.push_back(std::move(f));
     }
     for (auto& f : lineFutures) {
         solutions.push_back(f.get());
     }
     return solutions;
-
 }
