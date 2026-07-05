@@ -52,6 +52,8 @@ struct TopLines
     bool operator==(const TopLines &other) const;
 };
 
+namespace lines{
+    
 /// @brief Finds the intersection point between two lines
 Point intersect(const Line& l1, const Line& l2);
 
@@ -83,6 +85,9 @@ std::vector<TopLines> trails(std::vector<Line>& lines, int numTrails, bool separ
 std::vector<Line> linesFromFile(std::string filename);
 void processLine(std::string &line, std::vector<Line> &lines);
 
+
+    
+
 // Printing Operators
 std::ostream &operator<<(std::ostream& os, const Line &l);
 
@@ -90,3 +95,4 @@ std::ostream &operator<<(std::ostream& os, const Point &p);
 
 std::ostream &operator<<(std::ostream& os, const TopLines &tl);
 
+}

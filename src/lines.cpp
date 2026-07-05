@@ -48,7 +48,7 @@ bool Line::operator==(const Line& other) const {
     return (slope_ == other.slope_) and (intercept_ == other.intercept_);
 }
 
-std::ostream &operator<<(std::ostream& os, const Line &l){
+std::ostream &lines;:operator<<(std::ostream& os, const Line &l){
     os << "y =" << l.slope_ << "x + " << l.intercept_;
     return os;
 }
@@ -69,12 +69,12 @@ bool Point::operator!=(const Point& p) const{
     return !(*this==p);
 }
 
-std::ostream &operator<<(std::ostream& os, const Point &p){
+std::ostream &lines::operator<<(std::ostream& os, const Point &p){
     os << "(" << p.x_ << "," << p.y_ << ")";
     return os;
 }
 
-void processLine(std::string& line, std::vector<Line>& lines){
+void lines::processLine(std::string& line, std::vector<Line>& lines){
     size_t spaceInd = line.find(" ");
     if (spaceInd != std::string::npos){
         std::string slope = line.substr(0, spaceInd);
@@ -89,7 +89,7 @@ void processLine(std::string& line, std::vector<Line>& lines){
     }
 }
 
-std::vector<Line> linesFromFile(std::string filename){
+std::vector<Line> lines::linesFromFile(std::string filename){
     std::string line;
     std::vector<Line> lines;
     std::ifstream input = std::ifstream{filename};
@@ -103,7 +103,7 @@ std::vector<Line> linesFromFile(std::string filename){
 }
 
 // Finds the point line 1 and line 2 intersect at. 
-Point intersect(const Line& l1, const Line& l2){
+Point lines::intersect(const Line& l1, const Line& l2){
     Fraction x = (l1.intercept_ - l2.intercept_) / (l2.slope_ - l1.slope_);
     Fraction y = l1(x);
     return Point(x,y);

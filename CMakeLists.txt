@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.15...3.26)
 
 project(lines LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+add_compile_options("-freflection")
 
-#pip install --no-build-isolarion -ve
 add_subdirectory(src)
 
 option(WITH_PYTHON_BINDINGS OFF "With Python Bindings")

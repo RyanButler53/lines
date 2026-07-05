@@ -10,6 +10,63 @@ namespace nb = nanobind;
 
 using namespace nb::literals;
 
+nb::class_<Point> bindPoint(nb::module_ m){
+    nb::class_<Point> cls(m, "Point", "An XY Point where the XY are fractional values");
+    cls.def(nb::init<Fraction, Fraction>(), "Initializes a point from 2 fractions");
+    cls.def("__repr__", [](const Point &p) -> std::string { 
+        std::stringstream s; 
+        s << p; 
+        return s.str();
+        });
+    cls.def(nb::self == nb::self, nb::is_operator());
+    cls.def_rw("x", &Point::x_, "x");
+    cls.def_rw("y", &Point::y_, "y");
+
+    return cls;
+}
+
+constexpr std::string_view operatorName(std::meta::operators op) {
+    switch (op) {
+        case std::meta::operators::plus:       return "__add__";
+        case std::meta::operators::minus:      return "__sub__";
+        case std::meta::operators::star:       return "__mul__";
+        case std::meta::operators::slash:      return "__truediv__";
+        case std::meta::operators::equal_equal: return "__eq__";
+        default: return "";
+    }
+}
+
+template <typename T>
+nb::class_<T> bindStruct(nb::module_ m){
+    nb::class_<T> cls(m, std::meta::identifier_of(^^T));
+    constexpr auto ctx = std::meta::access_context::unchecked();
+
+    static constexpr auto members = std::define_static_array(std::meta::members_of(r, ctx));
+    template for (constexpr std::meta::info member : members){
+
+        // Constructors
+        if constexpr (std::meta::is_constructor(member)){
+            static constexpr auto params = std::define_static_array(std::meta::parameters_of(member));
+            // Need to pull the types of the reflection out with the splice? 
+            cls.def(nb::init<[:params:]>(), "");
+        }
+
+        // Member Variables
+        if (constexpr (std::meta::is_nonstatic_data_member(member))){
+            cls.def_rw(std::meta::identifier_of(member), [:member:]);
+        }
+
+        // Operators: 
+        if (constexpr (std::meta::is_operator_function(member))){
+            constexpr auto op = std::meta::operator_of(member);
+            constexpr auto py_operator = operatorName(op);
+            cls.def(py_name.data(), [:member:], nb::is_operator());
+        }
+    }
+}
+
+
+
 NB_MODULE(lines_ext, m) {
     m.doc() = "Bindings for the lines problem with nanobind";
 
@@ -27,22 +84,23 @@ NB_MODULE(lines_ext, m) {
     .def("to_float", &Fraction::toFloat, "Converts to a floating point")
     .def_rw("num", &Fraction::num_, "numerator")
     .def_rw("den", &Fraction::den_, "denominator")
-    .def(nb::self + nb::self)
-    .def(nb::self - nb::self)
-    .def(nb::self * nb::self)
-    .def(nb::self / nb::self)
+    .def(nb::self + nb::self, nb::is_operator())
+    .def(nb::self - nb::self, nb::is_operator())
+    .def(nb::self * nb::self, nb::is_operator())
+    .def(nb::self / nb::self, nb::is_operator())
     .def(nb::self == nb::self, nb::is_operator(), "Check equality with cross multiply");
 
-    nb::class_<Point>(m, "Point", "An XY Point where the XY are fractional values")
-    .def(nb::init<Fraction, Fraction>(), "Initializes a point from 2 fractions")
-    .def("__repr__", [](const Point &p) -> std::string { 
-        std::stringstream s; 
-        s << p; 
-        return s.str();
-     })
-    .def(nb::self == nb::self, nb::is_operator())
-    .def_rw("x", &Point::x_, "x")
-    .def_rw("y", &Point::y_, "y");
+    bindPoint(m);
+    // nb::class_<Point>(m, "Point", "An XY Point where the XY are fractional values")
+    // .def(nb::init<Fraction, Fraction>(), "Initializes a point from 2 fractions")
+    // .def("__repr__", [](const Point &p) -> std::string { 
+    //     std::stringstream s; 
+    //     s << p; 
+    //     return s.str();
+    //  })
+    // .def(nb::self == nb::self, nb::is_operator())
+    // .def_rw("x", &Point::x_, "x")
+    // .def_rw("y", &Point::y_, "y");
 
     nb::class_<Line>(m, "Line", "Slope Intercept line where slope and intercept are fractional")
     .def(nb::init<Fraction, Fraction>(), "Initialize slope and intercept from 2 Fractions")
