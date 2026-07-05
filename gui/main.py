@@ -13,15 +13,14 @@ from PyQt6.QtWidgets import (
     QGridLayout,
     QWidget,
 )
-import subprocess
-import toplines
-import image
-import trails
+
+from .toplines import *
+from .image import *
+from .trails import *
 
 COLOR_MAPS = ['random', 'viridis', 'plasma', 'inferno', 'magma', 'cividis','spring', 
               'summer', 'autumn', 'winter', 'cool', 'Wistia']
 
-app = QApplication([])
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -108,8 +107,8 @@ class MainWindow(QMainWindow):
                 lines.append(text)
         if len(lines) < 2:
             return
-        all, top= toplines.toplines(lines)
-        image.plot(top, all)
+        all, top= toplines(lines)
+        plot(top, all)
 
 
 
@@ -193,8 +192,8 @@ class MainWindow(QMainWindow):
         filename = self.rightWidgets[5].text().rstrip(".png")
         if filename == "":
             filename = "trails.png"
-        all, top= toplines.trails(numTrails, numLines, jitter, separate)
-        trails.plotTrails(top, all, color, filename)
+        all, top= trails(numTrails, numLines, jitter, separate)
+        plotTrails(top, all, color, filename)
 
     def getNumLines(self):
         try:
@@ -220,7 +219,9 @@ class MainWindow(QMainWindow):
             numTrails = numLines//2
         return numTrails
 
-window = MainWindow()
-window.show()  
+def main():
+    app = QApplication([])
+    window = MainWindow()
+    window.show()  
 
-app.exec()
+    app.exec()

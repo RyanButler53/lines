@@ -24,6 +24,7 @@ def plot(toplines:pl.toplines, all_lines):
 
     # Get window parameters and expand
     ax = plt.gca()
+
     y_lim = ax.get_ylim()
     x_lim = ax.get_xlim()
     ((x_min, x_max), (y_min, y_max)) = (x_lim, y_lim)
@@ -60,4 +61,6 @@ def plot(toplines:pl.toplines, all_lines):
     plt.tight_layout()
     plt.savefig("./figure1.png")
 
-# Plot the "trails" system
+    # Clear out the figure and axes 
+    plt.gcf().clear()
+    plt.gca().clear()
